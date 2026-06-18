@@ -13,6 +13,7 @@ import { routing } from "@/i18n/routing";
 import { Reveal } from "@/components/reveal";
 import { ViewCounter } from "@/components/view-counter";
 import { Comments } from "@/components/comments";
+import { CodeCopy } from "@/components/code-copy";
 
 const SITE_URL = "https://metehanulusoy.dev";
 
@@ -128,6 +129,7 @@ export default async function PostPage({
       </Reveal>
 
       <div className="mdx mt-10">{body}</div>
+      <CodeCopy />
 
       <div className="mt-16 border-t border-border pt-10">
         <Comments />

@@ -7,6 +7,7 @@ import { ArrowRight, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { heroContainer, heroItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
+import { DecryptText } from "@/components/decrypt-text";
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -107,7 +108,7 @@ export function Hero() {
         >
           <span className="text-accent-3">metehan@dev</span>:
           <span className="text-accent-1">~</span>${" "}
-          {t("learning")}
+          <DecryptText text={t("learning")} />
           <span className="caret ml-0.5 inline-block text-accent-5">▋</span>
         </motion.p>
       </motion.div>
