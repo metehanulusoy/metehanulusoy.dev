@@ -8,7 +8,7 @@ import { ArrowUpRight } from "lucide-react";
 import { projectTags, sortedProjects, type Project } from "@/data/projects";
 import { cardContainer, cardItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
-import { trackPointer } from "@/lib/pointer";
+import { resetTilt, tiltPointer } from "@/lib/pointer";
 import { cn } from "@/lib/utils";
 
 export function ProjectsExplorer() {
@@ -55,15 +55,13 @@ export function ProjectsExplorer() {
 
 function ProjectCard({ p, item }: { p: Project; item: Variants }) {
   return (
-    <motion.div
-      variants={item}
-      layout
-      style={{ "--card-accent": `var(${p.accent})` } as CSSProperties}
-    >
+    <motion.div variants={item} layout>
       <Link
         href={`/projects/${p.slug}`}
-        onPointerMove={trackPointer}
-        className="aurora-card group flex h-full flex-col p-6"
+        onPointerMove={tiltPointer}
+        onPointerLeave={resetTilt}
+        style={{ "--card-accent": `var(${p.accent})` } as CSSProperties}
+        className="aurora-card tilt group flex h-full flex-col p-6"
       >
         <span aria-hidden className="card-glow" />
         <div className="flex items-center justify-between">

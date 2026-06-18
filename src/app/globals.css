@@ -330,6 +330,20 @@
   opacity: 1;
 }
 
+/* ── 3D tilt on cards (driven by --rx / --ry from the pointer) ─ */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg));
+  transition: transform var(--t-std) var(--ease-out-quart);
+}
+
+/* ── Circular theme reveal (View Transitions API) ───────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 /* ── Gradient underline (links / writing rows) ──────────────── */
 .u-grad {
   background-image: var(--grad-divider);
@@ -483,5 +497,8 @@
   }
   .text-gradient {
     animation: none;
+  }
+  .tilt {
+    transform: none !important;
   }
 }

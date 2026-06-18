@@ -7,7 +7,7 @@ import { Activity, ArrowUpRight, BookOpen } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cardContainer, cardItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
-import { trackPointer } from "@/lib/pointer";
+import { resetTilt, tiltPointer } from "@/lib/pointer";
 import { CountUp } from "@/components/count-up";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -36,12 +36,17 @@ function Card({
     <motion.div
       id={id}
       variants={item}
-      onPointerMove={trackPointer}
-      style={{ "--card-accent": `var(${accent})` } as CSSProperties}
-      className={cn("aurora-card flex flex-col p-6", id && "scroll-mt-24", className)}
+      className={cn(id && "scroll-mt-24", className)}
     >
-      <span aria-hidden className="card-glow" />
-      {children}
+      <div
+        onPointerMove={tiltPointer}
+        onPointerLeave={resetTilt}
+        style={{ "--card-accent": `var(${accent})` } as CSSProperties}
+        className="aurora-card tilt flex h-full flex-col p-6"
+      >
+        <span aria-hidden className="card-glow" />
+        {children}
+      </div>
     </motion.div>
   );
 }
