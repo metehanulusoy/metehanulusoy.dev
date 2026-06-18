@@ -1,0 +1,49 @@
+---
+title: "Cutting LLM costs in half with complexity routing"
+description: "Most requests don't need your biggest model. A tiny classifier decides which model each prompt actually needs — and halves the bill."
+date: "2026-05-15"
+tags: ["llm", "cost", "infra"]
+category: "notes"
+---
+
+The cheapest way to cut an LLM bill isn't a discount — it's not calling the
+expensive model when you don't have to. Most production traffic is easy:
+short answers, classification, formatting. A small fraction is genuinely hard.
+If you route every request to GPT-4o "just in case", you're overpaying for the
+easy 80%.
+
+## The idea
+
+Score each prompt's complexity in under a millisecond, then send it to the
+cheapest model that can handle it. Escalate only on failure.
+
+```python
+from sklearn.linear_model import LogisticRegression
+
+# features: token count, question words, code fences, entity density...
+def route(prompt: str) -> str:
+    score = classifier.predict_proba(featurize(prompt))[0][1]
+    if score < 0.35:
+        return "gpt-4o-mini"     # easy: cheap + fast
+    if score < 0.75:
+        return "gpt-4o"          # medium
+    return "o3"                  # hard: reasoning
+```
+
+The classifier is a logistic regression over cheap, hand-built features — no
+extra LLM call, no added latency.
+
+## What made it actually work
+
+- **Escalation, not gambling.** If a cheap model fails a validity check, retry
+  one tier up instead of guessing high from the start.
+- **Async judge.** An out-of-band LLM-as-judge samples responses and feeds
+  mislabels back into the training set, so routing improves over time.
+- **Hot-reloadable config.** Model tiers and thresholds live in YAML, so tuning
+  doesn't need a redeploy.
+
+## The result
+
+Benchmarked against an all-GPT-4o baseline on the same traffic, this cut cost by
+**50%+** with no measurable quality drop on the easy and medium tiers. The win
+isn't a clever model — it's refusing to use one when you don't need it.

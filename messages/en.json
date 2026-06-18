@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "projects": "Projects",
+    "blog": "Blog",
+    "now": "Now",
+    "about": "About",
+    "toggleTheme": "Toggle theme",
+    "toggleLanguage": "Switch language"
+  },
+  "hero": {
+    "available": "AVAILABLE FOR SUMMER 2026 INTERNSHIPS",
+    "name": "Metehan Ulusoy",
+    "tagline": "2nd-year Computer Engineering student building AI systems, automation tools, and full-stack web apps.",
+    "readBlog": "Read the blog",
+    "seeProjects": "See projects",
+    "downloadCV": "Download CV",
+    "learning": "currently learning: operating systems, databases, OOP"
+  },
+  "bento": {
+    "eyebrow": "WHAT I'M DOING",
+    "title": "A snapshot.",
+    "featured": {
+      "label": "Featured project",
+      "name": "n8n Workflow Recommender",
+      "desc": "An AI chatbot that recommends the right automation from 2,055+ n8n workflows — shipped as a commercial product on Gumroad.",
+      "cta": "View project"
+    },
+    "latest": {
+      "label": "Latest post",
+      "title": "Why I switched from VS Code to Neovim, twice",
+      "excerpt": "Two attempts, one keyboard, and what finally made it stick.",
+      "cta": "Read"
+    },
+    "now": {
+      "label": "Now",
+      "items": [
+        "Finishing a recursive-descent parser for my Compiler course",
+        "Reading Designing Data-Intensive Applications, chapter 6",
+        "Applying to summer internships"
+      ]
+    },
+    "github": {
+      "label": "GitHub",
+      "commits": "21 public repos",
+      "language": "Python · TypeScript",
+      "streak": "8+ shipped to prod"
+    },
+    "reading": {
+      "label": "Currently reading",
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "status": "in progress"
+    },
+    "connect": {
+      "label": "Connect"
+    }
+  },
+  "writing": {
+    "eyebrow": "RECENT WRITING",
+    "title": "Notes from the journey.",
+    "all": "All posts",
+    "minRead": "min read",
+    "posts": [
+      { "date": "2026.05.18", "title": "Why I switched from VS Code to Neovim, twice", "minutes": 4 },
+      { "date": "2026.05.04", "title": "Understanding pointers by drawing them", "minutes": 7 },
+      { "date": "2026.04.21", "title": "Building a Turkish-aware autocomplete", "minutes": 11 }
+    ]
+  },
+  "footer": {
+    "bio": "Computer Engineering student writing software I'd want to use.",
+    "sitemap": "Sitemap",
+    "social": "Elsewhere",
+    "builtWith": "Built with Next.js & Vercel",
+    "rights": "All rights reserved.",
+    "theme": "Theme",
+    "language": "Language"
+  }
+}

@@ -1,0 +1,44 @@
+---
+title: "What I learned building a hybrid-search RAG pipeline"
+description: "Dense vectors miss exact terms. Keyword search misses meaning. Fusing both — then reranking — beats either alone."
+date: "2026-05-08"
+tags: ["rag", "search", "llm"]
+category: "notes"
+---
+
+My first RAG retriever was pure vector search, and it kept missing the obvious.
+Ask for an exact error code or a function name and embeddings would happily
+return something _semantically nearby_ but wrong. The fix wasn't a better
+embedding model — it was using two retrievers and letting them vote.
+
+## Dense + sparse, fused
+
+Run dense (embeddings) and sparse (BM25) retrieval in parallel, then merge with
+Reciprocal Rank Fusion:
+
+```python
+def rrf(rankings: list[list[str]], k: int = 60) -> list[str]:
+    scores: dict[str, float] = {}
+    for ranking in rankings:
+        for rank, doc_id in enumerate(ranking):
+            scores[doc_id] = scores.get(doc_id, 0) + 1 / (k + rank)
+    return sorted(scores, key=scores.get, reverse=True)
+```
+
+RRF needs no score normalization — it only cares about rank position, so a
+document both retrievers like floats to the top.
+
+## Rerank, then ground
+
+- **Cross-encoder rerank** the fused top-k. It's slow, so only run it on the
+  ~20 candidates RRF surfaces, not the whole corpus.
+- **Grounded generation** with bracketed citations, so every claim points at a
+  source chunk.
+- **Verify the citations** with an LLM-as-judge, and gate on a composite
+  confidence score — if it's low, the system says _"I don't know"_ instead of
+  hallucinating.
+
+## The lesson
+
+Retrieval quality is the ceiling on RAG quality. Generation can't fix what
+retrieval never surfaced. Spend your time there first.

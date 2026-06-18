@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(pnpm exec tsc *)",
+      "Bash(node *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git branch)",
+      "Bash(git branch *)",
+      "Bash(git checkout -b *)",
+      "Bash(gh repo view *)",
+      "Bash(gh api user*)",
+      "Bash(gh repo list *)",
+      "WebSearch"
+    ],
+    "ask": [
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(gh repo create *)",
+      "Bash(gh pr create *)",
+      "Bash(vercel *)",
+      "Bash(npx vercel *)"
+    ],
+    "deny": [
+      "Read(./.env*)",
+      "Read(./.env.local)",
+      "Read(./secrets/**)"
+    ]
+  }
+}

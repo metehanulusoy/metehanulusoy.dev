@@ -1,0 +1,40 @@
+---
+title: "Catching LLM regressions before your users do"
+description: "A prompt tweak that helps one case can silently break ten others. Treat prompts like code: gate every change behind an eval suite."
+date: "2026-04-28"
+tags: ["llm", "evals", "ci"]
+category: "tutorials"
+---
+
+LLM features regress in a way normal code doesn't: a one-line prompt edit that
+fixes the example in front of you can quietly degrade ten cases you forgot
+about. You can't `git diff` your way out of that. You need an eval suite that
+runs on every change.
+
+## Treat the prompt like code
+
+Keep a set of cases (input + expected behavior), score each candidate prompt or
+model against all of them, and block the merge if quality drops.
+
+```yaml
+# eval gate runs in CI on every PR touching prompts/ or models
+gate:
+  baseline: main
+  metrics: [exact_match, judge_score]
+  fail_if: judge_score < baseline - 0.03   # 3% regression budget
+```
+
+## What I wired up
+
+- **Async eval runner** so a 200-case suite finishes in seconds, not minutes.
+- **Two scorers:** exact-match for deterministic cases, an LLM-as-judge for
+  open-ended ones.
+- **Per-case HTML diff** so a reviewer can _see_ what changed, not just a number.
+- **A GitHub Action** that posts the results as a PR comment and sets a merge
+  gate — green or it doesn't ship.
+
+## Why it's worth it
+
+The first time the gate caught a "harmless" prompt cleanup that tanked the
+judge score by 8%, it paid for itself. Regressions are cheap to catch in CI and
+expensive to discover in production.

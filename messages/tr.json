@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "projects": "Projeler",
+    "blog": "Blog",
+    "now": "Şu an",
+    "about": "Hakkımda",
+    "toggleTheme": "Temayı değiştir",
+    "toggleLanguage": "Dili değiştir"
+  },
+  "hero": {
+    "available": "2026 YAZ STAJLARINA AÇIĞIM",
+    "name": "Metehan Ulusoy",
+    "tagline": "Yapay zeka sistemleri, otomasyon araçları ve full-stack web uygulamaları inşa eden 2. sınıf Bilgisayar Mühendisliği öğrencisi.",
+    "readBlog": "Blogu oku",
+    "seeProjects": "Projeleri gör",
+    "downloadCV": "CV indir",
+    "learning": "şu an öğreniyorum: işletim sistemleri, veritabanları, OOP"
+  },
+  "bento": {
+    "eyebrow": "NELER YAPIYORUM",
+    "title": "Bir anlık görüntü.",
+    "featured": {
+      "label": "Öne çıkan proje",
+      "name": "n8n Workflow Recommender",
+      "desc": "2.055+ n8n iş akışından en uygun otomasyonu öneren AI sohbet botu — Gumroad'da ticari ürün olarak yayında.",
+      "cta": "Projeyi gör"
+    },
+    "latest": {
+      "label": "Son yazı",
+      "title": "VS Code'dan Neovim'e neden iki kez geçtim",
+      "excerpt": "İki deneme, tek klavye ve sonunda neyin kalıcı olmasını sağladığı.",
+      "cta": "Oku"
+    },
+    "now": {
+      "label": "Şu an",
+      "items": [
+        "Derleyici dersi için özyinelemeli-inişli bir ayrıştırıcı bitiriyorum",
+        "Designing Data-Intensive Applications, 6. bölüm okuyorum",
+        "Yaz stajlarına başvuruyorum"
+      ]
+    },
+    "github": {
+      "label": "GitHub",
+      "commits": "21 public repo",
+      "language": "Python · TypeScript",
+      "streak": "8+ canlı proje"
+    },
+    "reading": {
+      "label": "Şu an okuyorum",
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "status": "devam ediyor"
+    },
+    "connect": {
+      "label": "Bağlan"
+    }
+  },
+  "writing": {
+    "eyebrow": "SON YAZILAR",
+    "title": "Yolculuktan notlar.",
+    "all": "Tüm yazılar",
+    "minRead": "dk okuma",
+    "posts": [
+      { "date": "2026.05.18", "title": "VS Code'dan Neovim'e neden iki kez geçtim", "minutes": 4 },
+      { "date": "2026.05.04", "title": "İşaretçileri çizerek anlamak", "minutes": 7 },
+      { "date": "2026.04.21", "title": "Türkçe-duyarlı otomatik tamamlama inşa etmek", "minutes": 11 }
+    ]
+  },
+  "footer": {
+    "bio": "Kendi kullanmak isteyeceği yazılımlar yazan Bilgisayar Mühendisliği öğrencisi.",
+    "sitemap": "Site haritası",
+    "social": "Diğer yerler",
+    "builtWith": "Next.js & Vercel ile yapıldı",
+    "rights": "Tüm hakları saklıdır.",
+    "theme": "Tema",
+    "language": "Dil"
+  }
+}
