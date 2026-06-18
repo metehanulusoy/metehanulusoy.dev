@@ -8,6 +8,7 @@ import { ArrowUpRight } from "lucide-react";
 import { projectTags, sortedProjects, type Project } from "@/data/projects";
 import { cardContainer, cardItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
+import { trackPointer } from "@/lib/pointer";
 import { cn } from "@/lib/utils";
 
 export function ProjectsExplorer() {
@@ -61,8 +62,10 @@ function ProjectCard({ p, item }: { p: Project; item: Variants }) {
     >
       <Link
         href={`/projects/${p.slug}`}
+        onPointerMove={trackPointer}
         className="aurora-card group flex h-full flex-col p-6"
       >
+        <span aria-hidden className="card-glow" />
         <div className="flex items-center justify-between">
           <span
             className="font-mono text-[11px] uppercase tracking-wider"

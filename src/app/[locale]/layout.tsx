@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuroraBackground } from "@/components/aurora-background";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { ScrollProgress } from "@/components/scroll-progress";
 import "../globals.css";
 
 const SITE_URL = "https://metehanulusoy.dev";
@@ -77,6 +78,7 @@ export default async function LocaleLayout({
             <a href="#main" className="skip-link">
               Skip to content
             </a>
+            <ScrollProgress />
             <AuroraBackground />
             <SiteNav />
             <main id="main" className="flex-1">

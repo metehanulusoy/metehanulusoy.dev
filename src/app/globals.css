@@ -312,6 +312,24 @@
     0 4px 16px oklch(0.12 0.03 270 / 0.5);
 }
 
+/* ── Cursor-following spotlight (behind card content) ───────── */
+.card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-std) var(--ease-out-quart);
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklch, var(--card-accent, var(--accent2)) 22%, transparent),
+    transparent 60%
+  );
+}
+.aurora-card:hover .card-glow {
+  opacity: 1;
+}
+
 /* ── Gradient underline (links / writing rows) ──────────────── */
 .u-grad {
   background-image: var(--grad-divider);
