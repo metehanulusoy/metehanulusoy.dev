@@ -1,56 +1,91 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
+import { setRequestLocale } from "next-intl/server";
 import { getAllPosts, getPost } from "@/lib/posts";
 import { getViews } from "@/lib/views";
+import { routing } from "@/i18n/routing";
 import { Reveal } from "@/components/reveal";
 import { ViewCounter } from "@/components/view-counter";
 import { Comments } from "@/components/comments";
 
+const SITE_URL = "https://metehanulusoy.dev";
+
 export function generateStaticParams() {
-  return getAllPosts().map((p) => ({ slug: p.slug }));
+  return routing.locales.flatMap((locale) =>
+    getAllPosts().map((p) => ({ locale, slug: p.slug })),
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const post = getPost(slug);
   if (!post) return { title: "Post not found" };
-  return { title: post.meta.title, description: post.meta.description };
+
+  const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
+  const url = `${SITE_URL}${prefix}/blog/${slug}`;
+
+  return {
+    title: post.meta.title,
+    description: post.meta.description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: post.meta.title,
+      description: post.meta.description,
+      url,
+      publishedTime: post.meta.date,
+      tags: post.meta.tags,
+    },
+  };
 }
 
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
   const post = getPost(slug);
   if (!post) notFound();
 
   const views = await getViews(slug);
 
-  const { content } = await compileMDX({
-    source: post.content,
-    options: {
-      mdxOptions: {
-        remarkPlugins: [remarkGfm],
-        rehypePlugins: [
-          [
-            rehypePrettyCode,
-            { theme: "github-dark-default", keepBackground: false },
+  let body: ReactNode;
+  try {
+    const compiled = await compileMDX({
+      source: post.content,
+      options: {
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+          rehypePlugins: [
+            [
+              rehypePrettyCode,
+              { theme: "github-dark-default", keepBackground: false },
+            ],
           ],
-        ],
+        },
       },
-    },
-  });
+    });
+    body = compiled.content;
+  } catch {
+    body = (
+      <p className="text-muted">
+        This post couldn&apos;t be rendered. The source may be malformed.
+      </p>
+    );
+  }
 
   return (
     <article className="mx-auto max-w-2xl px-6 pt-36 pb-24 md:px-8">
@@ -92,7 +127,7 @@ export default async function PostPage({
         </div>
       </Reveal>
 
-      <div className="mdx mt-10">{content}</div>
+      <div className="mdx mt-10">{body}</div>
 
       <div className="mt-16 border-t border-border pt-10">
         <Comments />

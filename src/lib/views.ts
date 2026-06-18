@@ -22,7 +22,9 @@ export async function incrementView(slug: string): Promise<number | null> {
 
   try {
     const h = await headers();
-    const ip = (h.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0].trim();
+    const ip =
+      (h.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0].trim() ||
+      "127.0.0.1";
 
     if (ratelimit) {
       const { success } = await ratelimit.limit(`incr:${ip}`);

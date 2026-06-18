@@ -2,18 +2,13 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { motion, type Variants } from "motion/react";
 import { Activity, ArrowUpRight, BookOpen } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cardContainer, cardItem } from "@/lib/motion";
+import { useMotionVariants } from "@/lib/use-motion-variants";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
-
-const reducedContainer: Variants = { hidden: {}, show: {} };
-const reducedItem: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
 
 const TECH = ["scikit-learn", "XGBoost", "FastAPI"];
 
@@ -57,9 +52,7 @@ function CardLabel({ children }: { children: ReactNode }) {
 
 export function Bento() {
   const t = useTranslations("bento");
-  const reduce = useReducedMotion();
-  const container = reduce ? reducedContainer : cardContainer;
-  const item = reduce ? reducedItem : cardItem;
+  const { container, item } = useMotionVariants(cardContainer, cardItem);
 
   const nowItems = t.raw("now.items") as string[];
 
@@ -69,7 +62,7 @@ export function Bento() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-12% 0px" }}
-        variants={reduce ? reducedItem : cardItem}
+        variants={item}
       >
         <p className="font-mono text-xs uppercase tracking-widest text-accent-2">
           {t("eyebrow")}
@@ -159,7 +152,9 @@ export function Bento() {
           <ul className="mt-4 space-y-2.5">
             {nowItems.map((line, i) => (
               <li key={i} className="flex gap-2.5 text-sm text-fg-2">
-                <span style={{ color: "var(--accent5)" }}>—</span>
+                <span aria-hidden style={{ color: "var(--accent5)" }}>
+                  —
+                </span>
                 {line}
               </li>
             ))}

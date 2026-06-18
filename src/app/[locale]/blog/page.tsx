@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "lucide-react";
+import { setRequestLocale } from "next-intl/server";
 import { getAllPosts } from "@/lib/posts";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
@@ -10,7 +11,13 @@ export const metadata: Metadata = {
   description: "Notes from learning in public — AI systems, LLM infra, and the web.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const posts = getAllPosts();
 
   return (

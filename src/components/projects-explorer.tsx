@@ -3,27 +3,22 @@
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import type { CSSProperties } from "react";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { motion, type Variants } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { projectTags, sortedProjects, type Project } from "@/data/projects";
 import { cardContainer, cardItem } from "@/lib/motion";
+import { useMotionVariants } from "@/lib/use-motion-variants";
 import { cn } from "@/lib/utils";
 
-const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
-
 export function ProjectsExplorer() {
-  const reduce = useReducedMotion();
   const [tag, setTag] = useState("all");
   const all = sortedProjects();
   const list = tag === "all" ? all : all.filter((p) => p.tags.includes(tag));
-  const container = reduce ? { hidden: {}, show: {} } : cardContainer;
-  const item = reduce ? fade : cardItem;
+  const { container, item } = useMotionVariants(cardContainer, cardItem);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 md:px-8">
+      <h2 className="sr-only">All projects</h2>
       <div className="flex flex-wrap gap-2">
         {projectTags.map((tg) => (
           <button

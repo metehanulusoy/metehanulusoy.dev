@@ -14,7 +14,11 @@ export type PostMeta = {
   minutes: number;
 };
 
-function readMeta(data: Record<string, unknown>, slug: string, body: string): PostMeta {
+function readMeta(
+  data: Record<string, unknown>,
+  slug: string,
+  body: string,
+): PostMeta {
   const words = body.split(/\s+/).filter(Boolean).length;
   return {
     slug,
@@ -32,17 +36,29 @@ export function getAllPosts(): PostMeta[] {
   return fs
     .readdirSync(BLOG_DIR)
     .filter((f) => f.endsWith(".mdx"))
-    .map((f) => {
-      const raw = fs.readFileSync(path.join(BLOG_DIR, f), "utf8");
-      const { data, content } = matter(raw);
-      return readMeta(data, f.replace(/\.mdx$/, ""), content);
+    .map((f): PostMeta | null => {
+      try {
+        const raw = fs.readFileSync(path.join(BLOG_DIR, f), "utf8");
+        const { data, content } = matter(raw);
+        return readMeta(data, f.replace(/\.mdx$/, ""), content);
+      } catch {
+        // Skip a malformed post rather than crashing the whole list.
+        return null;
+      }
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    .filter((p): p is PostMeta => p !== null)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export function getPost(slug: string): { meta: PostMeta; content: string } | null {
+export function getPost(
+  slug: string,
+): { meta: PostMeta; content: string } | null {
   const file = path.join(BLOG_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(file)) return null;
-  const { data, content } = matter(fs.readFileSync(file, "utf8"));
-  return { meta: readMeta(data, slug, content), content };
+  try {
+    if (!fs.existsSync(file)) return null;
+    const { data, content } = matter(fs.readFileSync(file, "utf8"));
+    return { meta: readMeta(data, slug, content), content };
+  } catch {
+    return null;
+  }
 }

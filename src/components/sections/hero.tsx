@@ -1,25 +1,15 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowRight, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { heroContainer, heroItem } from "@/lib/motion";
-
-const reducedContainer: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.05 } },
-};
-const reducedItem: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
+import { useMotionVariants } from "@/lib/use-motion-variants";
 
 export function Hero() {
   const t = useTranslations("hero");
-  const reduce = useReducedMotion();
-  const container = reduce ? reducedContainer : heroContainer;
-  const item = reduce ? reducedItem : heroItem;
+  const { reduce, container, item } = useMotionVariants(heroContainer, heroItem);
   const words = t("name").split(" ");
 
   return (

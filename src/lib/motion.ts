@@ -37,8 +37,9 @@ export const cardItem: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOutExpo } },
 };
 
-/** Reduced-motion fallback: opacity only. */
-export const fadeOnly: Variants = {
+/** Reduced-motion fallbacks (no stagger / movement, opacity only). */
+export const noOpContainer: Variants = { hidden: {}, show: {} };
+export const reducedItem: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.2 } },
+  show: { opacity: 1, transition: { duration: 0.3 } },
 };

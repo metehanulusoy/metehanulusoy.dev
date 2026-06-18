@@ -20,7 +20,7 @@
   /* Text */
   --fg: oklch(0.96 0.01 275);
   --fg2: oklch(0.8 0.02 275);
-  --muted: oklch(0.66 0.025 275);
+  --muted: oklch(0.7 0.025 275);
 
   /* Accents — a colourful constellation */
   --accent1: oklch(0.7 0.17 275); /* indigo  — primary / links / focus */

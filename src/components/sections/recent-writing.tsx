@@ -1,23 +1,17 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cardContainer, cardItem, sectionReveal } from "@/lib/motion";
+import { cardContainer, cardItem, reducedItem, sectionReveal } from "@/lib/motion";
+import { useMotionVariants } from "@/lib/use-motion-variants";
 
 type Post = { slug: string; title: string; date: string; minutes: number };
 
-const reducedItem: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
-
 export function RecentWriting({ posts }: { posts: Post[] }) {
   const t = useTranslations("writing");
-  const reduce = useReducedMotion();
-  const container = reduce ? { hidden: {}, show: {} } : cardContainer;
-  const item = reduce ? reducedItem : cardItem;
+  const { reduce, container, item } = useMotionVariants(cardContainer, cardItem);
 
   if (posts.length === 0) return null;
 

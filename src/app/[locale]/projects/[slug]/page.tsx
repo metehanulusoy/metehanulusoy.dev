@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { setRequestLocale } from "next-intl/server";
 import { getProject, projects } from "@/data/projects";
+import { routing } from "@/i18n/routing";
 import { GithubIcon } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 
 export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  return routing.locales.flatMap((locale) =>
+    projects.map((p) => ({ locale, slug: p.slug })),
+  );
 }
 
 export async function generateMetadata({
@@ -24,9 +28,10 @@ export async function generateMetadata({
 export default async function ProjectPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
   const p = getProject(slug);
   if (!p) notFound();
 

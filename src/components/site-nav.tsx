@@ -65,7 +65,7 @@ export function SiteNav() {
           <ThemeToggle />
           <button
             type="button"
-            aria-label="Menu"
+            aria-label={t("menu")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="grid size-9 place-items-center rounded-lg border border-border text-fg"

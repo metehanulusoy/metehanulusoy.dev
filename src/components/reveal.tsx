@@ -1,13 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion, useReducedMotion, type Variants } from "motion/react";
-import { sectionReveal } from "@/lib/motion";
-
-const fade: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-};
+import { motion, useReducedMotion } from "motion/react";
+import { reducedItem, sectionReveal } from "@/lib/motion";
 
 /** Fade + rise into view once; collapses to a plain fade under reduced motion. */
 export function Reveal({
@@ -24,7 +19,7 @@ export function Reveal({
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-12% 0px" }}
-      variants={reduce ? fade : sectionReveal}
+      variants={reduce ? reducedItem : sectionReveal}
     >
       {children}
     </motion.div>

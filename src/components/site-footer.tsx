@@ -100,6 +100,7 @@ export function SiteFooter() {
           </p>
           <button
             type="button"
+            aria-label="Back to top"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="group inline-flex items-center gap-1.5 text-fg-2 transition-colors hover:text-accent-3"
           >

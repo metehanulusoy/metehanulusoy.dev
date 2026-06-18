@@ -8,9 +8,11 @@ export function ViewCounter({ slug, initial }: { slug: string; initial: number }
 
   useEffect(() => {
     let active = true;
-    incrementView(slug).then((next) => {
-      if (active && typeof next === "number") setCount(next);
-    });
+    incrementView(slug)
+      .then((next) => {
+        if (active && typeof next === "number") setCount(next);
+      })
+      .catch(() => {});
     return () => {
       active = false;
     };
