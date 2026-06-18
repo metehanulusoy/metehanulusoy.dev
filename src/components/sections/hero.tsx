@@ -61,11 +61,7 @@ export function Hero() {
             whileHover={reduce ? undefined : { scale: 1.03, y: -2 }}
             whileTap={reduce ? undefined : { scale: 0.97 }}
             className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white"
-            style={{
-              background: "var(--grad-cta)",
-              boxShadow:
-                "0 8px 28px color-mix(in oklch, var(--accent3) 22%, transparent)",
-            }}
+            style={{ background: "var(--grad-cta)" }}
           >
             {t("readBlog")} <ArrowRight className="size-4" />
           </motion.a>
