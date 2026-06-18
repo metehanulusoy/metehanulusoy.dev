@@ -11,6 +11,7 @@ export type Project = {
   tech: string[];
   featured?: boolean;
   accent: string; // CSS var token, e.g. "--accent2"
+  cover?: string; // real screenshot under /public/projects
   links: { github?: string; demo?: string };
 };
 
@@ -77,6 +78,7 @@ export const projects: Project[] = [
     tags: ["ai"],
     tech: ["Python", "LangChain", "ChromaDB", "Streamlit"],
     accent: "--accent4",
+    cover: "/projects/pdf-rag-assistant.png",
     links: {
       github: `${GH}/pdf-rag-app`,
       demo: "https://pdf-rag-app-metehanulusoy.streamlit.app",
@@ -150,7 +152,44 @@ export const projects: Project[] = [
     tags: ["web"],
     tech: ["Next.js", "TypeScript", "Supabase"],
     accent: "--accent1",
+    cover: "/projects/animeverse.png",
     links: { github: `${GH}/myanimelist`, demo: "https://myanimelist-eta.vercel.app" },
+  },
+  {
+    slug: "garbage-classifier",
+    title: "Real-Time Garbage Classifier",
+    summary:
+      "Browser waste classification with MobileNetV2 transfer learning — 87.3% accuracy across 6 categories.",
+    description:
+      "A real-time waste-classification web app using MobileNetV2 transfer learning, trained on 2,500+ images (87.3% validation accuracy across 6 categories). Inference runs fully in the browser — only the Dense-layer weights (~30KB) ship while the base loads from a CDN, avoiding an 80MB download.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ml"],
+    tech: ["TensorFlow.js", "MobileNetV2"],
+    accent: "--accent3",
+    cover: "/projects/garbage-classifier.png",
+    links: {
+      github: `${GH}/garbage-classifier`,
+      demo: "https://metehanulusoy.github.io/garbage-classifier",
+    },
+  },
+  {
+    slug: "mnist-digit-recognizer",
+    title: "MNIST Digit Recognizer",
+    summary:
+      "Draw a digit, watch a neural net classify it live — ~98% accuracy, fully in the browser.",
+    description:
+      "A neural-network digit recognizer trained on MNIST to ~98.2% accuracy with TensorFlow/Keras, deployed as an interactive browser demo: draw a digit on the canvas and watch the per-class probabilities update in real time.",
+    year: 2025,
+    status: "shipped",
+    tags: ["ml"],
+    tech: ["TensorFlow.js", "Keras"],
+    accent: "--accent1",
+    cover: "/projects/mnist-digit-recognizer.png",
+    links: {
+      github: `${GH}/mnist-digit-recognizer`,
+      demo: "https://metehanulusoy.github.io/mnist-digit-recognizer",
+    },
   },
 ];
 

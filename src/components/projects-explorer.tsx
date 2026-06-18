@@ -9,7 +9,7 @@ import { projectTags, sortedProjects, type Project } from "@/data/projects";
 import { cardContainer, cardItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
 import { resetTilt, tiltPointer } from "@/lib/pointer";
-import { ProjectVisual } from "@/components/project-visual";
+import { ProjectCover } from "@/components/project-cover";
 import { cn } from "@/lib/utils";
 
 export function ProjectsExplorer() {
@@ -65,8 +65,10 @@ function ProjectCard({ p, item }: { p: Project; item: Variants }) {
         className="aurora-card tilt group flex h-full flex-col p-6"
       >
         <span aria-hidden className="card-glow" />
-        <ProjectVisual
+        <ProjectCover
+          cover={p.cover}
           tags={p.tags}
+          title={p.title}
           className="mb-5 aspect-[16/7] w-full rounded-xl border border-border"
         />
         <div className="flex items-center justify-between">
