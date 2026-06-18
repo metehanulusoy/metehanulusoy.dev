@@ -1,7 +1,6 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
 import { Moon, Sun } from "lucide-react";
@@ -37,7 +36,13 @@ export function ThemeToggle() {
     );
 
     const transition = doc.startViewTransition(() => {
-      flushSync(() => setTheme(next));
+      // Apply the class directly so the transition snapshots the new theme —
+      // without forcing next-themes to render its <script> synchronously
+      // (which React 19 warns about). next-themes is synced right after.
+      const root = document.documentElement;
+      root.classList.remove("light", "dark");
+      root.classList.add(next);
+      root.style.colorScheme = next;
     });
 
     transition.ready.then(() => {
@@ -55,6 +60,8 @@ export function ThemeToggle() {
         },
       );
     });
+
+    setTheme(next);
   };
 
   return (
