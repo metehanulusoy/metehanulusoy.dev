@@ -21,8 +21,8 @@
     "title": "A snapshot.",
     "featured": {
       "label": "Featured project",
-      "name": "n8n Workflow Recommender",
-      "desc": "An AI chatbot that recommends the right automation from 2,055+ n8n workflows — shipped as a commercial product on Gumroad.",
+      "name": "Credit Risk Scoring",
+      "desc": "A credit-default ML pipeline (XGBoost + SHAP) hitting AUC-ROC 0.87, served over a FastAPI endpoint.",
       "cta": "View project"
     },
     "latest": {

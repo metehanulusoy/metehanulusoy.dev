@@ -17,24 +17,53 @@ export type Project = {
 const GH = "https://github.com/metehanulusoy";
 
 /**
- * Real projects, curated from Metehan's CV + public GitHub. Only links that
- * are actually live (public repos / deployed demos) are included.
+ * Real projects, aligned with Metehan's CV + public GitHub. Only live links
+ * (public repos / deployed demos) are included.
  */
 export const projects: Project[] = [
   {
-    slug: "n8n-automation-bundle",
-    title: "n8n Workflow Recommender & AI Bundle",
+    slug: "credit-risk-scoring",
+    title: "Credit Risk Scoring",
     summary:
-      "An AI chatbot that recommends the right automation from 2,055+ n8n workflows — packaged into a commercial product on Gumroad.",
+      "A credit-default ML pipeline — 4 models on 10k+ samples, AUC-ROC 0.87, SHAP explainability, served over FastAPI.",
     description:
-      "A zero-backend browser app that recommends the right automation from a curated library of 2,055+ n8n workflows using a custom keyword-scoring algorithm, plus a companion Python→n8n converter. Packaged and sold as a $20 product on Gumroad — end-to-end product development with a real, paying customer base.",
+      "An end-to-end credit-default prediction pipeline comparing 4 models on 10,000+ samples (AUC-ROC 0.87, KS 0.61, Gini 0.75) with 19 crafted features. SHAP explainability across every feature, and a FastAPI endpoint for real-time scoring of loan applications — built to mirror how risk models actually ship in finance.",
     year: 2026,
     status: "shipped",
-    tags: ["ai", "automation"],
-    tech: ["JavaScript", "n8n", "GitHub Pages", "Gumroad"],
+    tags: ["ml", "finance"],
+    tech: ["scikit-learn", "XGBoost", "SHAP", "FastAPI"],
     featured: true,
     accent: "--accent2",
-    links: { github: `${GH}/awesome-n8n-workflows`, demo: "https://metmete.gumroad.com" },
+    links: { github: `${GH}/credit-risk-scoring` },
+  },
+  {
+    slug: "fraud-detection-system",
+    title: "Real-Time Fraud Detection",
+    summary:
+      "An XGBoost + Isolation Forest ensemble on 50k transactions — F1 0.99, 0.02% false-positive rate.",
+    description:
+      "A real-time fraud-detection system: an XGBoost + Isolation Forest ensemble trained on 50,000 transactions (F1 0.99, FPR 0.02%) with 20+ domain features (velocity, amount anomaly, temporal signals). Handles a 98/2 class imbalance with SMOTETomek resampling and ships a rule-based alert engine with 6 configurable thresholds.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ml", "finance"],
+    tech: ["XGBoost", "Isolation Forest", "FastAPI"],
+    featured: true,
+    accent: "--accent1",
+    links: { github: `${GH}/fraud-detection-system` },
+  },
+  {
+    slug: "banking-chatbot-rag",
+    title: "Banking FAQ Chatbot (RAG)",
+    summary:
+      "A Turkish banking FAQ chatbot with RAG + 5 compliance guardrails — PII masking, confidence scoring, disclaimers.",
+    description:
+      "A RAG-based banking FAQ chatbot using LangChain + ChromaDB + FastAPI, with multilingual embeddings over banking documents for accurate Turkish retrieval. Enforces 5 compliance guardrails: out-of-scope detection, PII masking, confidence scoring, fallback routing, and regulatory disclaimers.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ai", "finance"],
+    tech: ["LangChain", "ChromaDB", "FastAPI"],
+    accent: "--accent3",
+    links: { github: `${GH}/banking-chatbot-rag` },
   },
   {
     slug: "pdf-rag-assistant",
@@ -42,34 +71,30 @@ export const projects: Project[] = [
     summary:
       "Upload PDFs and ask questions across Turkish, English, German and French — RAG with LangChain + GPT-4o-mini.",
     description:
-      "A multi-language document Q&A system built with LangChain, OpenAI GPT-4o-mini and a ChromaDB vector store. Users upload multiple PDFs and query them through a conversational interface with automatic summary extraction and quick-question shortcuts. Deployed live on Streamlit Cloud.",
+      "A multi-language document Q&A system built with LangChain, OpenAI GPT-4o-mini and a ChromaDB vector store. Users upload multiple PDFs and query them through a conversational interface with automatic summary extraction. Deployed live on Streamlit Cloud.",
     year: 2026,
     status: "shipped",
     tags: ["ai"],
     tech: ["Python", "LangChain", "ChromaDB", "Streamlit"],
-    featured: true,
-    accent: "--accent1",
+    accent: "--accent4",
     links: {
       github: `${GH}/pdf-rag-app`,
       demo: "https://pdf-rag-app-metehanulusoy.streamlit.app",
     },
   },
   {
-    slug: "garbage-classifier",
-    title: "Real-Time Garbage Classifier",
+    slug: "n8n-automation-bundle",
+    title: "n8n Workflow Recommender & AI Bundle",
     summary:
-      "Client-side waste classification with MobileNetV2 transfer learning — 87.3% accuracy across 6 categories.",
+      "An AI chatbot that recommends from 2,055+ n8n workflows — packaged as a commercial product on Gumroad.",
     description:
-      "A real-time waste-classification web app using MobileNetV2 transfer learning, trained on 2,500+ Kaggle images (87.3% validation accuracy across 6 categories). Inference runs fully in the browser: only the Dense layer weights (~30KB) are shipped while the MobileNetV2 base loads from a CDN, avoiding an 80MB model download.",
+      "A zero-backend browser app that recommends the right automation from a curated library of 2,055+ n8n workflows using a custom keyword-scoring algorithm, plus a companion Python→n8n converter. Packaged and sold as a $20 product on Gumroad — end-to-end product development with a real customer base.",
     year: 2026,
     status: "shipped",
-    tags: ["ml"],
-    tech: ["Python", "TensorFlow.js", "MobileNetV2"],
-    accent: "--accent3",
-    links: {
-      github: `${GH}/garbage-classifier`,
-      demo: "https://metehanulusoy.github.io/garbage-classifier",
-    },
+    tags: ["ai", "automation"],
+    tech: ["JavaScript", "n8n", "Gumroad"],
+    accent: "--accent5",
+    links: { github: `${GH}/awesome-n8n-workflows`, demo: "https://metmete.gumroad.com" },
   },
   {
     slug: "price-tracker-bot",
@@ -82,50 +107,8 @@ export const projects: Project[] = [
     status: "shipped",
     tags: ["automation"],
     tech: ["Python", "Playwright", "Supabase", "Telegram"],
-    accent: "--accent4",
-    links: { github: `${GH}/price-tracker-bot` },
-  },
-  {
-    slug: "comic-book-manager",
-    title: "Comic Book Manager (C++)",
-    summary:
-      "A C++ app showcasing 10+ hand-built data structures — B+ tree, XOR linked list, hash tables, graphs — plus Huffman & KMP.",
-    description:
-      "A cross-platform C++ application implementing 10+ custom data structures (B+ tree, XOR linked list, chaining & open-addressing hash tables, sparse matrix, graph with BFS/DFS), Huffman compression, and KMP string search — covered by an 18+ module GoogleTest suite. A deep dive into algorithms and testing discipline.",
-    year: 2025,
-    status: "shipped",
-    tags: ["systems"],
-    tech: ["C++", "CMake", "GoogleTest"],
-    accent: "--accent5",
-    links: {},
-  },
-  {
-    slug: "basiclan",
-    title: "BasicLan — Language Learning Platform",
-    summary:
-      "A Java language-learning app (team of 4) with pluggable Binary/SQLite/MySQL storage and a full CI/CD pipeline.",
-    description:
-      "A console-based language-learning app built by a 4-person Agile team in Java, with a pluggable storage architecture (Binary, SQLite, MySQL) switchable at runtime. Shipped with a Maven + GitHub Actions CI/CD pipeline, a Dockerized MySQL backend, and JaCoCo coverage across Windows/macOS/Linux builds.",
-    year: 2025,
-    status: "shipped",
-    tags: ["tooling"],
-    tech: ["Java", "Maven", "Docker", "GitHub Actions"],
     accent: "--accent2",
-    links: {},
-  },
-  {
-    slug: "animeverse",
-    title: "AnimeVerse",
-    summary:
-      "A social anime-tracking platform — watch lists, ratings, and following — built on Next.js 16 + Supabase.",
-    description:
-      "A full social platform for anime fans built on Next.js 16 and Supabase: authentication, a personal watch list with statuses and ratings, social following, and a responsive, app-like UI. A end-to-end, data-backed web product.",
-    year: 2026,
-    status: "shipped",
-    tags: ["web"],
-    tech: ["Next.js", "TypeScript", "Supabase"],
-    accent: "--accent1",
-    links: { github: `${GH}/myanimelist`, demo: "https://myanimelist-eta.vercel.app" },
+    links: { github: `${GH}/price-tracker-bot` },
   },
   {
     slug: "rag-hybrid-search",
@@ -142,21 +125,32 @@ export const projects: Project[] = [
     links: { github: `${GH}/rag-hybrid-search` },
   },
   {
-    slug: "mnist-digit-recognizer",
-    title: "MNIST Digit Recognizer",
+    slug: "comic-book-manager",
+    title: "Comic Book Manager (C++)",
     summary:
-      "Handwritten digit recognition with a neural network — ~98% accuracy, runnable in the browser.",
+      "A C++ app showcasing 10+ hand-built data structures — B+ tree, XOR linked list, hash tables, graphs — plus Huffman & KMP.",
     description:
-      "A neural-network digit recognizer trained on MNIST to ~98.2% accuracy with TensorFlow/Keras, deployed as an interactive browser demo where you draw a digit and watch it get classified.",
+      "A cross-platform C++ application implementing 10+ custom data structures (B+ tree, XOR linked list, chaining & open-addressing hash tables, sparse matrix, graph with BFS/DFS), Huffman compression, and KMP string search — covered by an 18+ module GoogleTest suite. A deep dive into algorithms and testing discipline.",
     year: 2025,
     status: "shipped",
-    tags: ["ml"],
-    tech: ["Python", "TensorFlow", "Keras"],
+    tags: ["systems"],
+    tech: ["C++", "CMake", "GoogleTest"],
     accent: "--accent4",
-    links: {
-      github: `${GH}/mnist-digit-recognizer`,
-      demo: "https://metehanulusoy.github.io/mnist-digit-recognizer",
-    },
+    links: {},
+  },
+  {
+    slug: "animeverse",
+    title: "AnimeVerse",
+    summary:
+      "A social anime-tracking platform — watch lists, ratings, and following — built on Next.js 16 + Supabase.",
+    description:
+      "A full social platform for anime fans built on Next.js 16 and Supabase: authentication, a personal watch list with statuses and ratings, social following, and a responsive, app-like UI. An end-to-end, data-backed web product.",
+    year: 2026,
+    status: "shipped",
+    tags: ["web"],
+    tech: ["Next.js", "TypeScript", "Supabase"],
+    accent: "--accent1",
+    links: { github: `${GH}/myanimelist`, demo: "https://myanimelist-eta.vercel.app" },
   },
 ];
 

@@ -15,7 +15,7 @@ const reducedItem: Variants = {
   show: { opacity: 1, transition: { duration: 0.3 } },
 };
 
-const TECH = ["TypeScript", "Next.js", "Redis"];
+const TECH = ["scikit-learn", "XGBoost", "FastAPI"];
 
 const CONNECT = [
   { Icon: GithubIcon, href: "https://github.com/metehanulusoy", handle: "@metehanulusoy" },
@@ -123,7 +123,7 @@ export function Bento() {
             ))}
           </div>
           <Link
-            href="/projects/n8n-automation-bundle"
+            href="/projects/credit-risk-scoring"
             className="group mt-auto inline-flex items-center gap-1.5 pt-5 font-mono text-sm text-accent-2"
           >
             {t("featured.cta")}

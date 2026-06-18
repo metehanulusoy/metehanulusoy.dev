@@ -21,8 +21,8 @@
     "title": "Bir anlık görüntü.",
     "featured": {
       "label": "Öne çıkan proje",
-      "name": "n8n Workflow Recommender",
-      "desc": "2.055+ n8n iş akışından en uygun otomasyonu öneren AI sohbet botu — Gumroad'da ticari ürün olarak yayında.",
+      "name": "Credit Risk Scoring",
+      "desc": "XGBoost + SHAP ile kredi temerrüt tahmin hattı — AUC-ROC 0.87, FastAPI ile sunuluyor.",
       "cta": "Projeyi gör"
     },
     "latest": {

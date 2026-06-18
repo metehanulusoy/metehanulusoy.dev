@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const QUICK_FACTS = [
-  { Icon: MapPin, label: "Rize, Türkiye" },
+  { Icon: MapPin, label: "Trabzon, Türkiye" },
   { Icon: GraduationCap, label: "Computer Engineering · 2nd year" },
   { Icon: Sparkles, label: "Currently: AI, automation & backend" },
 ];
@@ -32,7 +32,7 @@ const TIMELINE = [
 
 const SKILLS: { heading: string; items: string[] }[] = [
   { heading: "LANGUAGES", items: ["Python", "Java", "C / C++", "SQL", "JavaScript"] },
-  { heading: "AI / ML", items: ["TensorFlow", "LangChain", "RAG", "ChromaDB", "scikit-learn"] },
+  { heading: "AI / ML", items: ["scikit-learn", "XGBoost", "LangChain", "RAG", "SHAP"] },
   { heading: "WEB & BACKEND", items: ["Next.js", "FastAPI", "Streamlit", "Node.js", "Supabase"] },
   { heading: "TOOLS", items: ["Git", "Docker", "PostgreSQL", "n8n", "CMake"] },
   { heading: "LEARNING", items: ["Operating systems", "Distributed systems", "System design"] },
@@ -68,9 +68,9 @@ export default function AboutPage() {
             it. So far that&apos;s meant 8+ projects deployed to production.
           </p>
           <p>
-            Most of my energy goes into AI and automation: retrieval pipelines
-            (RAG), LLM tooling, transfer-learning demos, and web-scraping bots
-            with real notifications. I&apos;ve also shipped a commercial
+            Most of my energy goes into AI and automation: finance ML (credit
+            risk, fraud detection), retrieval pipelines (RAG), and automation
+            bots with real notifications. I&apos;ve also shipped a commercial
             automation product on Gumroad, and on the web side I build
             full-stack apps with Next.js and Supabase. I like the unglamorous
             parts — measuring quality, cutting cost, making things reproducible.
