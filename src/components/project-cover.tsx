@@ -4,16 +4,14 @@ import { cn } from "@/lib/utils";
 
 /**
  * A project's cover: a real screenshot of its live demo when available,
- * otherwise the accent-tinted generative motif.
+ * otherwise a plain accent-tinted panel.
  */
 export function ProjectCover({
   cover,
-  tags,
   title,
   className,
 }: {
   cover?: string;
-  tags: string[];
   title: string;
   className?: string;
 }) {
@@ -30,5 +28,5 @@ export function ProjectCover({
       </div>
     );
   }
-  return <ProjectVisual tags={tags} className={className} />;
+  return <ProjectVisual className={className} />;
 }

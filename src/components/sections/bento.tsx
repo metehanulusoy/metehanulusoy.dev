@@ -104,10 +104,7 @@ export function Bento() {
               featured
             </span>
           </div>
-          <ProjectVisual
-            tags={["finance"]}
-            className="aspect-video w-full rounded-xl border border-border"
-          />
+          <ProjectVisual className="aspect-video w-full rounded-xl border border-border" />
           <h3 className="mt-5 text-xl font-semibold text-fg">
             {t("featured.name")}
           </h3>

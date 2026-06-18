@@ -67,7 +67,6 @@ function ProjectCard({ p, item }: { p: Project; item: Variants }) {
         <span aria-hidden className="card-glow" />
         <ProjectCover
           cover={p.cover}
-          tags={p.tags}
           title={p.title}
           className="mb-5 aspect-[16/7] w-full rounded-xl border border-border"
         />
