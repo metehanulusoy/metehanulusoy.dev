@@ -14,7 +14,7 @@ const SOCIALS: { Icon: ComponentType<{ className?: string }>; href: string; labe
     label: "LinkedIn",
   },
   { Icon: ShoppingBag, href: "https://metmete.gumroad.com", label: "Gumroad" },
-  { Icon: Mail, href: "mailto:metmete2003@gmail.com", label: "Email" },
+  { Icon: Mail, href: "mailto:metehan_ulusoy24@erdogan.edu.tr", label: "Email" },
 ];
 
 const SITEMAP = ["projects", "blog", "now", "about"] as const;
@@ -47,10 +47,10 @@ export function SiteFooter() {
           </p>
           <p className="max-w-xs text-sm text-muted">{t("bio")}</p>
           <a
-            href="mailto:metmete2003@gmail.com"
+            href="mailto:metehan_ulusoy24@erdogan.edu.tr"
             className="group inline-block text-sm text-fg-2 transition-colors hover:text-fg"
           >
-            <span className="u-grad pb-0.5">metmete2003@gmail.com</span>
+            <span className="u-grad pb-0.5">metehan_ulusoy24@erdogan.edu.tr</span>
           </a>
         </div>
 
