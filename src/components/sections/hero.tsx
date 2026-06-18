@@ -80,7 +80,7 @@ export function Hero() {
               href="#writing"
               whileHover={reduce ? undefined : { scale: 1.04 }}
               whileTap={reduce ? undefined : { scale: 0.97 }}
-              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white"
+              className="sheen inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white"
               style={{ background: "var(--grad-cta)" }}
             >
               {t("readBlog")} <ArrowRight className="size-4" />

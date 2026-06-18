@@ -9,6 +9,7 @@ import { cardContainer, cardItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
 import { resetTilt, tiltPointer } from "@/lib/pointer";
 import { CountUp } from "@/components/count-up";
+import { ProjectVisual } from "@/components/project-visual";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
@@ -103,12 +104,9 @@ export function Bento() {
               featured
             </span>
           </div>
-          <div
+          <ProjectVisual
+            tags={["finance"]}
             className="aspect-video w-full rounded-xl border border-border"
-            style={{
-              background:
-                "radial-gradient(120% 120% at 20% 10%, color-mix(in oklch, var(--accent2) 45%, transparent), transparent 60%), radial-gradient(120% 120% at 90% 90%, color-mix(in oklch, var(--accent3) 40%, transparent), transparent 55%), var(--bg-card)",
-            }}
           />
           <h3 className="mt-5 text-xl font-semibold text-fg">
             {t("featured.name")}

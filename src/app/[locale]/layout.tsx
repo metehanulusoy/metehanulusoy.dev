@@ -47,6 +47,11 @@ export async function generateMetadata({
       siteName: "Metehan Ulusoy",
       url: `${SITE_URL}${path}`,
       locale: locale === "tr" ? "tr_TR" : "en_US",
+      images: ["/opengraph-image"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: ["/opengraph-image"],
     },
   };
 }
