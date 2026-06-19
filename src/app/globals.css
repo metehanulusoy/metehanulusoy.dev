@@ -387,6 +387,76 @@
   }
 }
 
+/* ── Weight-bloom kinetic ticker ────────────────────────────── */
+.bloom-band {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 14%,
+    #000 86%,
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+.bloom-center {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    34% 130% at 50% 50%,
+    color-mix(in oklch, var(--accent2) 18%, transparent),
+    transparent 72%
+  );
+}
+.bloom-strip {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-variation-settings: "wght" 360;
+  letter-spacing: 0.02em;
+  will-change: transform;
+  animation: marqueeX 42s linear infinite;
+}
+.bloom-strip [data-c] {
+  display: inline-block;
+  opacity: 0.32;
+}
+@keyframes marqueeX {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Project archetype crest (redraws itself on card hover) ──── */
+.crest {
+  opacity: 0.4;
+  transition:
+    opacity var(--t-std) var(--ease-out-quart),
+    transform var(--t-std) var(--ease-out-quart);
+}
+.crest path,
+.crest circle {
+  stroke-dasharray: 160;
+}
+.aurora-card:hover .crest {
+  opacity: 0.92;
+  transform: scale(1.1) rotate(-4deg);
+}
+.aurora-card:hover .crest path,
+.aurora-card:hover .crest circle {
+  animation: crestDraw 0.7s var(--ease-out-quart);
+}
+@keyframes crestDraw {
+  from {
+    stroke-dashoffset: 160;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 /* ── Animated keyframes ─────────────────────────────────────── */
 @keyframes drift {
   0% {
@@ -572,5 +642,8 @@
   }
   .tilt {
     transform: none !important;
+  }
+  .bloom-strip [data-c] {
+    opacity: 0.85;
   }
 }

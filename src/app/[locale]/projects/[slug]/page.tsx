@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
@@ -6,6 +7,8 @@ import { setRequestLocale } from "next-intl/server";
 import { getProject, projects } from "@/data/projects";
 import { routing } from "@/i18n/routing";
 import { GithubIcon } from "@/components/icons";
+import { ProjectCover } from "@/components/project-cover";
+import { CoverReveal } from "@/components/cover-reveal";
 import { Reveal } from "@/components/reveal";
 
 export function generateStaticParams() {
@@ -44,6 +47,19 @@ export default async function ProjectPage({
         <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
         projects
       </Link>
+
+      <CoverReveal
+        className="mt-8 overflow-hidden rounded-2xl border border-border"
+        style={{ "--card-accent": `var(${p.accent})` } as CSSProperties}
+      >
+        <ProjectCover
+          cover={p.cover}
+          title={p.title}
+          seed={p.slug}
+          archetype={p.tags[0]}
+          className="aspect-[16/7] w-full"
+        />
+      </CoverReveal>
 
       <Reveal className="mt-8">
         <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-muted">

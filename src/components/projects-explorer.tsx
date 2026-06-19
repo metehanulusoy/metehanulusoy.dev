@@ -1,22 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/i18n/navigation";
 import type { CSSProperties } from "react";
-import { motion, type Variants } from "motion/react";
+import { Link } from "@/i18n/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { projectTags, sortedProjects, type Project } from "@/data/projects";
-import { cardContainer, cardItem } from "@/lib/motion";
-import { useMotionVariants } from "@/lib/use-motion-variants";
 import { resetTilt, tiltPointer } from "@/lib/pointer";
 import { ProjectCover } from "@/components/project-cover";
 import { cn } from "@/lib/utils";
 
 export function ProjectsExplorer() {
   const [tag, setTag] = useState("all");
+  const reduce = useReducedMotion();
   const all = sortedProjects();
   const list = tag === "all" ? all : all.filter((p) => p.tags.includes(tag));
-  const { container, item } = useMotionVariants(cardContainer, cardItem);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 md:px-8">
@@ -41,22 +39,32 @@ export function ProjectsExplorer() {
       </div>
 
       <motion.div
-        initial="hidden"
-        animate="show"
-        variants={container}
+        layout={!reduce}
         className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2"
       >
-        {list.map((p) => (
-          <ProjectCard key={p.slug} p={p} item={item} />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {list.map((p) => (
+            <ProjectCard key={p.slug} p={p} reduce={!!reduce} />
+          ))}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
 }
 
-function ProjectCard({ p, item }: { p: Project; item: Variants }) {
+function ProjectCard({ p, reduce }: { p: Project; reduce: boolean }) {
   return (
-    <motion.div variants={item} layout>
+    <motion.div
+      layout={!reduce}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+      animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+      exit={
+        reduce
+          ? { opacity: 0 }
+          : { opacity: 0, clipPath: "inset(0 0 100% 0)", transition: { duration: 0.25 } }
+      }
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    >
       <Link
         href={`/projects/${p.slug}`}
         onPointerMove={tiltPointer}
@@ -68,6 +76,8 @@ function ProjectCard({ p, item }: { p: Project; item: Variants }) {
         <ProjectCover
           cover={p.cover}
           title={p.title}
+          seed={p.slug}
+          archetype={p.tags[0]}
           className="mb-5 aspect-[16/7] w-full rounded-xl border border-border"
         />
         <div className="flex items-center justify-between">

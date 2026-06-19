@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/hero";
 import { Bento } from "@/components/sections/bento";
+import { SkillsTicker } from "@/components/sections/skills-ticker";
 import { RecentWriting } from "@/components/sections/recent-writing";
 import { getAllPosts } from "@/lib/posts";
 
@@ -17,6 +18,7 @@ export default function Home() {
     <>
       <Hero />
       <Bento />
+      <SkillsTicker />
       <RecentWriting posts={posts} />
     </>
   );
