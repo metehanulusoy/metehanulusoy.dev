@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 
 const repo = process.env.NEXT_PUBLIC_GISCUS_REPO;
 const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID;
@@ -18,6 +18,27 @@ export function Comments() {
   const ref = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const theme = resolvedTheme === "light" ? "light" : "dark_dimmed";
+
+  // Re-apply the current theme once giscus signals ready — covers a theme toggle
+  // made while the iframe was still loading (the [theme] effect below can no-op
+  // in that window because the frame doesn't exist yet). Re-binds per theme so
+  // the handler always posts the latest value.
+  useEffect(() => {
+    if (!configured) return;
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== "https://giscus.app") return;
+      if (!e.data || typeof e.data !== "object" || !("giscus" in e.data)) return;
+      const frame = ref.current?.querySelector<HTMLIFrameElement>(
+        "iframe.giscus-frame",
+      );
+      frame?.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme } } },
+        "https://giscus.app",
+      );
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [theme]);
 
   useEffect(() => {
     const el = ref.current;

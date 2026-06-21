@@ -2,7 +2,9 @@
 
 import { motion, useScroll } from "motion/react";
 
-/** A thin gradient bar pinned to the top that fills as you scroll the page. */
+/** A thin gradient bar pinned to the top that fills as you scroll the page.
+ *  Scroll-linked indicator (moves 1:1 with the user's own scroll, never
+ *  auto-plays) — intentionally exempt from prefers-reduced-motion. */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
 

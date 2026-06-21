@@ -1,6 +1,7 @@
 "use client";
 
-import { useReducedMotion, type Variants } from "motion/react";
+import { type Variants } from "motion/react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { noOpContainer, reducedItem } from "@/lib/motion";
 
 /**

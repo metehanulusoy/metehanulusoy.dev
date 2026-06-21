@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "motion/react";
+import { useInView } from "motion/react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/<>_-#*";
 const rand = () => CHARS[Math.floor(Math.random() * CHARS.length)];
@@ -39,9 +40,13 @@ export function DecryptText({
     return () => cancelAnimationFrame(raf);
   }, [inView, reduce, text]);
 
+  // Screen readers get the clean text; the scrambling glyphs are decorative.
   return (
-    <span ref={ref} className={className}>
-      {display}
-    </span>
+    <>
+      <span className="sr-only">{text}</span>
+      <span ref={ref} aria-hidden className={className}>
+        {display}
+      </span>
+    </>
   );
 }
