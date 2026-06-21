@@ -6,16 +6,14 @@ import { ArrowLeft } from "lucide-react";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAllPosts, getPost } from "@/lib/posts";
-import { getViews } from "@/lib/views";
 import { routing } from "@/i18n/routing";
+import { localizedUrl, SITE_URL } from "@/lib/seo";
 import { Reveal } from "@/components/reveal";
 import { ViewCounter } from "@/components/view-counter";
 import { Comments } from "@/components/comments";
 import { CodeCopy } from "@/components/code-copy";
-
-const SITE_URL = "https://metehanulusoy.dev";
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -32,13 +30,18 @@ export async function generateMetadata({
   const post = getPost(slug);
   if (!post) return { title: "Post not found" };
 
-  const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
-  const url = `${SITE_URL}${prefix}/blog/${slug}`;
+  const url = localizedUrl(locale, `/blog/${slug}`);
+  const enUrl = `${SITE_URL}/blog/${slug}`;
 
   return {
     title: post.meta.title,
     description: post.meta.description,
-    alternates: { canonical: url },
+    // Posts are English-only, so don't advertise a `tr` hreflang equivalent that
+    // would point at the same English content. Re-add `tr` once translations exist.
+    alternates: {
+      canonical: url,
+      languages: { en: enUrl, "x-default": enUrl },
+    },
     openGraph: {
       type: "article",
       title: post.meta.title,
@@ -57,11 +60,10 @@ export default async function PostPage({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("blog");
 
   const post = getPost(slug);
   if (!post) notFound();
-
-  const views = await getViews(slug);
 
   let body: ReactNode;
   try {
@@ -102,15 +104,10 @@ export default async function PostPage({
         <p className="flex flex-wrap items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-accent-4">
           <span>{post.meta.date}</span>
           <span className="text-muted">·</span>
-          <span>{post.meta.minutes} min read</span>
-          {views !== null ? (
-            <>
-              <span className="text-muted">·</span>
-              <span className="text-muted normal-case tracking-normal">
-                <ViewCounter slug={slug} initial={views} />
-              </span>
-            </>
-          ) : null}
+          <span>
+            {post.meta.minutes} {t("minRead")}
+          </span>
+          <ViewCounter slug={slug} label={t("views")} />
         </p>
         <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
           {post.meta.title}

@@ -2,10 +2,20 @@
 
 import { headers } from "next/headers";
 import { redis, ratelimit } from "@/lib/redis";
+import { getPost } from "@/lib/posts";
+
+// These are public Server Actions, so the slug is attacker-controlled. Reject
+// anything that isn't a real post before touching Redis — otherwise arbitrary
+// slugs could mint unbounded `views:*` keys (Upstash keyspace/cost abuse). The
+// charset guard also blocks path-y input before it reaches getPost's path.join.
+const SLUG_RE = /^[a-z0-9-]{1,80}$/;
+function isKnownSlug(slug: string): boolean {
+  return SLUG_RE.test(slug) && getPost(slug) !== null;
+}
 
 /** Read the view count for a slug. Returns null when Redis isn't configured or errors. */
 export async function getViews(slug: string): Promise<number | null> {
-  if (!redis) return null;
+  if (!redis || !isKnownSlug(slug)) return null;
   try {
     return (await redis.get<number>(`views:${slug}`)) ?? 0;
   } catch {
@@ -18,7 +28,7 @@ export async function getViews(slug: string): Promise<number | null> {
  * Returns the new count, or null when Redis isn't configured / errors.
  */
 export async function incrementView(slug: string): Promise<number | null> {
-  if (!redis) return null;
+  if (!redis || !isKnownSlug(slug)) return null;
 
   try {
     const h = await headers();
