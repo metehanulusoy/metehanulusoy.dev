@@ -70,13 +70,15 @@
   );
   --bg-card: linear-gradient(
     160deg,
-    oklch(0.25 0.035 277 / 0.72) 0%,
-    oklch(0.2 0.03 280 / 0.55) 100%
+    oklch(0.25 0.035 277 / 0.82) 0%,
+    oklch(0.2 0.03 280 / 0.66) 100%
   );
+  /* CTA stops capped at ~0.55L so white text holds ≥4.5:1 (AA) across the whole
+     gradient (the lighter 0.62L magenta end was failing). */
   --grad-cta: linear-gradient(
     100deg,
-    oklch(0.58 0.18 290) 0%,
-    oklch(0.62 0.19 322) 100%
+    oklch(0.55 0.18 290) 0%,
+    oklch(0.55 0.19 322) 100%
   );
   --grad-divider: linear-gradient(
     90deg,
@@ -85,6 +87,13 @@
     oklch(0.74 0.18 350 / 0.5),
     oklch(0.83 0.13 190 / 0.4),
     transparent
+  );
+  /* Drives the scroll-progress bar and the active-nav underline. */
+  --grad-nav-progress: linear-gradient(
+    90deg,
+    var(--accent1),
+    var(--accent4),
+    var(--accent3)
   );
 
   /* Motion tokens */
@@ -108,13 +117,16 @@
 
   --fg: oklch(0.24 0.03 277);
   --fg2: oklch(0.4 0.03 277);
-  --muted: oklch(0.52 0.03 277);
+  /* Darkened from 0.52L for a safer AA contrast margin on small light-mode text. */
+  --muted: oklch(0.46 0.03 277);
 
   --accent1: oklch(0.52 0.18 275);
   --accent2: oklch(0.54 0.2 300);
-  --accent3: oklch(0.58 0.13 195);
+  /* accent3/accent5 darkened in light mode so they clear AA (4.5:1) as small
+     text on the near-white surface; teal/amber were ~3.5:1 before. */
+  --accent3: oklch(0.5 0.13 195);
   --accent4: oklch(0.56 0.2 350);
-  --accent5: oklch(0.62 0.14 80);
+  --accent5: oklch(0.55 0.14 80);
 
   --bg-page: radial-gradient(
       60% 55% at 20% 12%,
@@ -281,7 +293,10 @@
   position: relative;
   border-radius: var(--radius-card);
   background: var(--bg-card);
-  backdrop-filter: blur(14px) saturate(140%);
+  /* No backdrop-filter: the card carries the 3D tilt transform, and a filtered
+     element re-rasterizes its blurred backdrop every frame it moves. The aurora
+     behind is already heavily blurred, so a near-opaque bg keeps the glass look
+     without the per-frame re-blur. */
   box-shadow: 0 4px 16px oklch(0.12 0.03 270 / 0.5);
   isolation: isolate;
 }
@@ -421,7 +436,9 @@
 }
 .bloom-strip [data-c] {
   display: inline-block;
-  opacity: 0.32;
+  /* Resting glyphs must clear text contrast; the bloom adds weight + a touch
+     of brightness on top (JS drives it from this same floor). */
+  opacity: 0.85;
 }
 @keyframes marqueeX {
   to {
@@ -440,12 +457,15 @@
 .crest circle {
   stroke-dasharray: 160;
 }
-.aurora-card:hover .crest {
+.aurora-card:hover .crest,
+.cover-hero:hover .crest {
   opacity: 0.92;
   transform: scale(1.1) rotate(-4deg);
 }
 .aurora-card:hover .crest path,
-.aurora-card:hover .crest circle {
+.aurora-card:hover .crest circle,
+.cover-hero:hover .crest path,
+.cover-hero:hover .crest circle {
   animation: crestDraw 0.7s var(--ease-out-quart);
 }
 @keyframes crestDraw {
@@ -458,15 +478,18 @@
 }
 
 /* ── Animated keyframes ─────────────────────────────────────── */
+/* Translate only — no scale(): scaling a blur(64px) layer forces a full-viewport
+   blurred-bitmap re-raster every frame (the biggest idle GPU/battery cost on
+   low-end devices). Translating just composites a cached bitmap. */
 @keyframes drift {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translate3d(4%, -3%, 0) scale(1.08);
+    transform: translate3d(4%, -3%, 0);
   }
   100% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 @keyframes gradDrift {

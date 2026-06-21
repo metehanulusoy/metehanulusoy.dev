@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { useReducedMotion } from "motion/react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const ITEMS = [
   "Python", "PyTorch", "LangChain", "FastAPI", "Next.js", "TypeScript",
@@ -53,13 +53,15 @@ export function SkillsTicker() {
       const left = strip.getBoundingClientRect().left;
       const cx = window.innerWidth / 2;
       for (let i = 0; i < spans.length; i++) {
-        const d = Math.abs(left + centers[i] - cx);
-        const e = d < R ? (1 - d / R) ** 2 : 0;
-        const key = (e * 100) | 0;
-        if (key !== last[i]) {
-          last[i] = key;
-          spans[i].style.fontVariationSettings = `'wght' ${360 + Math.round(e * 480)}`;
-          spans[i].style.opacity = `${0.32 + e * 0.68}`;
+        const distance = Math.abs(left + centers[i] - cx);
+        const intensity = distance < R ? (1 - distance / R) ** 2 : 0; // eased falloff
+        const bucket = (intensity * 100) | 0; // quantize → skip redundant style writes
+        if (bucket !== last[i]) {
+          last[i] = bucket;
+          spans[i].style.fontVariationSettings = `'wght' ${360 + Math.round(intensity * 480)}`;
+          // Resting glyphs stay legible (≥4.5:1); the bloom is carried by weight,
+          // not by dimming text below contrast.
+          spans[i].style.opacity = `${0.85 + intensity * 0.15}`;
         }
       }
     };
@@ -67,19 +69,29 @@ export function SkillsTicker() {
 
     const io = new IntersectionObserver(([entry]) => {
       running = entry.isIntersecting;
+      // Also halt the CSS marquee transform so it stops compositing offscreen.
+      strip.style.animationPlayState = entry.isIntersecting ? "running" : "paused";
     });
     io.observe(strip);
 
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
+      strip.style.animationPlayState = "";
     };
   }, [reduce, chars]);
 
   return (
     <section aria-label="Tools and technologies" className="border-y border-border/60 py-7">
-      <div className="bloom-band">
-        <div className="bloom-center" aria-hidden />
+      {/* The marquee is decorative (two duplicated, per-glyph copies); expose the
+          skills to assistive tech once, as plain text. */}
+      <ul className="sr-only">
+        {ITEMS.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      <div className="bloom-band" aria-hidden>
+        <div className="bloom-center" />
         <div ref={stripRef} className="bloom-strip text-lg md:text-xl">
           {chars.map((c, i) => (
             <span key={i} data-c style={{ color: c.color }}>

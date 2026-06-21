@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useReducedMotion } from "motion/react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { cssColorToRgb } from "@/lib/css-rgb";
 
 /* Deterministic seed → repeatable per-project layout. */
 function hash(s: string) {
@@ -38,17 +39,18 @@ export function ProjectTexture({ seed, className }: { seed: string; className?: 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const m = getComputedStyle(canvas).color.match(/[\d.]+/g);
-    const [r, g, b] = m && m.length >= 3 ? m.map(Number) : [150, 130, 240];
+    // --card-accent resolves to an oklch() value; round-trip it through a
+    // canvas to get true sRGB (a naive regex would read L/C/H as 0–255).
+    const [r, g, b] = cssColorToRgb(getComputedStyle(canvas).color);
 
     const rand = mulberry32(hash(seed));
     const blobs = Array.from({ length: 3 + Math.floor(rand() * 2) }, () => ({
       x: 0.1 + rand() * 0.8,
       y: 0.1 + rand() * 0.8,
-      rad: 0.28 + rand() * 0.4,
+      radius: 0.28 + rand() * 0.4,
       phase: rand() * Math.PI * 2,
-      spd: 0.25 + rand() * 0.5,
-      amp: 0.03 + rand() * 0.05,
+      speed: 0.25 + rand() * 0.5,
+      amplitude: 0.03 + rand() * 0.05,
     }));
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -63,15 +65,15 @@ export function ProjectTexture({ seed, className }: { seed: string; className?: 
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = "lighter";
       for (const bl of blobs) {
-        const cx = (bl.x + Math.cos(time * bl.spd + bl.phase) * bl.amp) * W;
-        const cy = (bl.y + Math.sin(time * bl.spd * 0.8 + bl.phase) * bl.amp) * H;
-        const rr = bl.rad * Math.max(W, H);
-        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rr);
+        const cx = (bl.x + Math.cos(time * bl.speed + bl.phase) * bl.amplitude) * W;
+        const cy = (bl.y + Math.sin(time * bl.speed * 0.8 + bl.phase) * bl.amplitude) * H;
+        const radiusPx = bl.radius * Math.max(W, H);
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radiusPx);
         grad.addColorStop(0, `rgba(${r},${g},${b},0.15)`);
         grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+        ctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
         ctx.fill();
       }
     };
@@ -102,9 +104,14 @@ export function ProjectTexture({ seed, className }: { seed: string; className?: 
       raf = 0;
       draw(0);
     };
+    let resizeRaf = 0;
     const onResize = () => {
-      resize();
-      draw(0);
+      if (resizeRaf) return; // coalesce a resize-drag burst across N instances
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        resize();
+        draw(0);
+      });
     };
     card.addEventListener("pointerenter", enter);
     card.addEventListener("pointerleave", leave);
@@ -112,6 +119,7 @@ export function ProjectTexture({ seed, className }: { seed: string; className?: 
 
     return () => {
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(resizeRaf);
       card.removeEventListener("pointerenter", enter);
       card.removeEventListener("pointerleave", leave);
       window.removeEventListener("resize", onResize);

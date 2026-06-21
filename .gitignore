@@ -43,3 +43,6 @@ docs/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code local preview config
+.claude/launch.json
