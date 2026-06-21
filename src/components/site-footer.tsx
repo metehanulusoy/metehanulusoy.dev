@@ -69,6 +69,14 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href="/rss.xml"
+                className="font-mono text-sm text-muted transition-colors hover:text-accent-1"
+              >
+                RSS
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -100,8 +108,13 @@ export function SiteFooter() {
           </p>
           <button
             type="button"
-            aria-label="Back to top"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label={t("backToTop")}
+            onClick={() => {
+              const reduce = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+              ).matches;
+              window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+            }}
             className="group inline-flex items-center gap-1.5 text-fg-2 transition-colors hover:text-accent-3"
           >
             <ArrowUp className="size-3.5 transition-transform group-hover:-translate-y-0.5" />

@@ -1,24 +1,51 @@
 import type { MetadataRoute } from "next";
-import { routing } from "@/i18n/routing";
 import { getAllPosts } from "@/lib/posts";
 import { projects } from "@/data/projects";
+import { SITE_URL } from "@/lib/seo";
 
-const SITE_URL = "https://metehanulusoy.dev";
+type Entry = {
+  path: string;
+  priority: number;
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+  lastModified?: string;
+};
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPaths = ["", "/projects", "/blog", "/about", "/now"];
-  const dynamicPaths = [
-    ...projects.map((p) => `/projects/${p.slug}`),
-    ...getAllPosts().map((p) => `/blog/${p.slug}`),
+  const staticPages: Entry[] = [
+    { path: "", priority: 1, changeFrequency: "weekly" },
+    { path: "/projects", priority: 0.8, changeFrequency: "monthly" },
+    { path: "/blog", priority: 0.8, changeFrequency: "weekly" },
+    { path: "/about", priority: 0.6, changeFrequency: "monthly" },
+    { path: "/now", priority: 0.6, changeFrequency: "monthly" },
   ];
-  const paths = [...staticPaths, ...dynamicPaths];
 
-  return routing.locales.flatMap((locale) => {
-    const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
-    return paths.map((path) => ({
-      url: `${SITE_URL}${prefix}${path}`,
-      changeFrequency: path === "" || path === "/blog" ? "weekly" : "monthly",
-      priority: path === "" ? 1 : path.includes("/", 1) ? 0.7 : 0.8,
+  const projectPages: Entry[] = projects
+    .filter((p) => !p.locked) // private projects have no public URL
+    .map((p) => ({
+      path: `/projects/${p.slug}`,
+      priority: 0.6,
+      changeFrequency: "yearly",
+      lastModified: `${p.year}-01-01`,
     }));
-  });
+
+  const postPages: Entry[] = getAllPosts().map((p) => ({
+    path: `/blog/${p.slug}`,
+    priority: 0.7,
+    changeFrequency: "monthly",
+    lastModified: p.date || undefined,
+  }));
+
+  return [...staticPages, ...projectPages, ...postPages].map((entry) => ({
+    url: `${SITE_URL}${entry.path}`,
+    lastModified: entry.lastModified,
+    changeFrequency: entry.changeFrequency,
+    priority: entry.priority,
+    // Declare the en/tr equivalence inline (the canonical bilingual sitemap form).
+    alternates: {
+      languages: {
+        en: `${SITE_URL}${entry.path}`,
+        tr: `${SITE_URL}/tr${entry.path}`,
+      },
+    },
+  }));
 }
