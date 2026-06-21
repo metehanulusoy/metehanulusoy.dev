@@ -49,9 +49,10 @@ export function SiteNav() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        // Lower blur radius over the (already-soft) animating aurora keeps the
-        // per-frame backdrop re-blur cheap; the higher bg opacity compensates.
-        scrolled && "border-b border-border bg-bg/85 backdrop-blur-sm",
+        // No backdrop-filter: blurring the page content scrolling underneath
+        // re-samples the backdrop every scroll frame (a classic jank source). A
+        // near-opaque solid bar is free to scroll under.
+        scrolled && "border-b border-border bg-bg/95",
       )}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 md:px-8">
@@ -110,7 +111,7 @@ export function SiteNav() {
       {open && (
         <div
           id="mobile-menu"
-          className="border-t border-border bg-bg/90 backdrop-blur-md md:hidden"
+          className="border-t border-border bg-bg/95 md:hidden"
         >
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-4">
             {LINKS.map((l) => (
