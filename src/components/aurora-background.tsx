@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useSpring } from "motion/react";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
- * The signature breathing aurora: soft CSS blobs that drift on their own, parallax
- * as you scroll, and lean toward the cursor. The movement is transform-only on a
- * `will-change` (composited) layer — cheap — and the heavy bits that used to cause
- * scroll jank are gone (no scale re-raster, no grain blend, lower blur, no nav
- * backdrop). Reduced motion pins it static.
+ * The signature breathing aurora. Two layers of movement, both off the main
+ * thread for smooth scrolling:
+ *  - scroll parallax → a CSS scroll-driven animation (.aurora-parallax in
+ *    globals.css), so scrolling does zero JS;
+ *  - cursor lean → a Motion spring driven by pointermove (desktop only, not
+ *    scroll-coupled).
+ * Blobs drift on the compositor; reduced motion pins everything static.
  */
 export function AuroraBackground() {
   const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 900], [0, 180]);
   const px = useSpring(0, { stiffness: 60, damping: 18 });
   const py = useSpring(0, { stiffness: 60, damping: 18 });
 
@@ -34,7 +34,7 @@ export function AuroraBackground() {
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
       style={{ background: "var(--bg-page)" }}
     >
-      <motion.div className="absolute inset-0" style={reduce ? undefined : { y }}>
+      <div className="aurora-parallax absolute inset-0">
         <motion.div
           className="absolute inset-0"
           style={reduce ? undefined : { x: px, y: py }}
@@ -43,7 +43,7 @@ export function AuroraBackground() {
           <div className="aurora-blob aurora-b" />
           <div className="aurora-blob aurora-c" />
         </motion.div>
-      </motion.div>
+      </div>
       <div className="aurora-grain" />
       <div className="aurora-vignette" />
     </div>

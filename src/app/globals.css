@@ -291,6 +291,50 @@
   );
 }
 
+/* ── Scroll-driven animations (compositor thread — zero main-thread JS while
+   scrolling). Replaces the Motion useScroll subscriptions. Guarded by @supports;
+   where unsupported they no-op (the aurora still drifts, the bar stays hidden). ── */
+@keyframes aurora-rise {
+  to {
+    transform: translate3d(0, 180px, 0);
+  }
+}
+@keyframes scroll-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+/* Base: hidden when the scroll animation isn't running (unsupported / reduced
+   motion), so the bar never flashes full-width. */
+.scroll-progress-bar {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+@supports (animation-timeline: scroll()) {
+  .aurora-parallax {
+    animation: aurora-rise linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 900px;
+    will-change: transform;
+  }
+  .scroll-progress-bar {
+    animation: scroll-grow linear both;
+    animation-timeline: scroll(root block);
+    will-change: transform;
+  }
+}
+/* `!important` beats the global reduced-motion `animation-duration: .01ms` rule,
+   which would otherwise snap these scroll animations to their end state. */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-parallax,
+  .scroll-progress-bar {
+    animation: none !important;
+  }
+}
+
 /* ── Glass card with rotating conic border ──────────────────── */
 .aurora-card {
   position: relative;
