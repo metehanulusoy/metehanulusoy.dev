@@ -1,4 +1,4 @@
-export type ProjectStatus = "shipped" | "experiment" | "archived";
+export type ProjectStatus = "shipped" | "experiment" | "archived" | "private";
 
 export type Project = {
   slug: string;
@@ -13,15 +13,16 @@ export type Project = {
   accent: string; // CSS var token, e.g. "--accent2"
   cover?: string; // real screenshot under /public/projects
   links: { github?: string; demo?: string };
+  locked?: boolean; // private repo — shown locked, not clickable, no details
 };
 
 const GH = "https://github.com/metehanulusoy";
 
 /**
- * Real projects, aligned with Metehan's CV + public GitHub. Only live links
- * (public repos / deployed demos) are included.
+ * Real public projects, aligned with Metehan's CV + public GitHub. Only live
+ * links (public repos / deployed demos) are included.
  */
-export const projects: Project[] = [
+const publicProjects: Project[] = [
   {
     slug: "credit-risk-scoring",
     title: "Credit Risk Scoring",
@@ -53,6 +54,104 @@ export const projects: Project[] = [
     links: { github: `${GH}/fraud-detection-system` },
   },
   {
+    slug: "llm-cost-autopilot",
+    title: "LLM Cost Autopilot",
+    summary:
+      "A multi-provider LLM gateway that routes each prompt to the cheapest capable model — 50%+ cost cut vs an all-GPT-4o baseline.",
+    description:
+      "An intelligent multi-provider LLM gateway with sub-millisecond scikit-learn complexity routing, hot-reloadable YAML config, auto-escalation on failures, and async LLM-as-judge quality verification. Most requests don't need your biggest model — a tiny classifier decides which one each prompt actually needs, halving the bill.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ai"],
+    tech: ["Python", "scikit-learn", "FastAPI"],
+    accent: "--accent3",
+    links: { github: `${GH}/llm-cost-autopilot` },
+  },
+  {
+    slug: "model-regression-detection",
+    title: "LLM Regression Detection",
+    summary:
+      "A CI/CD-style regression gate for LLM features — catches quality drops on every prompt or model change before they reach users.",
+    description:
+      "A regression-detection pipeline for LLM-powered features: an async eval runner, exact-match + LLM-as-judge scoring, per-case HTML diffs, Slack alerts, and a GitHub Action with a PR-comment bot and merge gate. Treats prompts like code — every change is gated behind an eval suite.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ai"],
+    tech: ["Python", "GitHub Actions", "LLM-as-judge"],
+    accent: "--accent1",
+    links: { github: `${GH}/model-regression-detection` },
+  },
+  {
+    slug: "semantic-caching",
+    title: "Semantic Caching Proxy",
+    summary:
+      "An OpenAI-compatible drop-in proxy that dedupes near-identical requests by embedding similarity — streaming-aware, temperature-keyed TTLs.",
+    description:
+      "An OpenAI-compatible drop-in semantic caching proxy: embedding-based similarity dedup, a streaming-aware writer that only caches complete successful responses, temperature-keyed TTL tiers, Prometheus observability, and an optional Redis backend. Cuts repeat-call latency and cost without touching the calling code.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ai"],
+    tech: ["Python", "FastAPI", "Redis", "Embeddings"],
+    accent: "--accent2",
+    links: { github: `${GH}/semantic-caching` },
+  },
+  {
+    slug: "rag-hybrid-search",
+    title: "Hybrid-Search RAG Pipeline",
+    summary:
+      "Production-grade retrieval: dense + BM25 indexing, RRF fusion, cross-encoder rerank, and verified citations.",
+    description:
+      "An end-to-end RAG pipeline that takes retrieval quality seriously: multi-format ingestion, swappable chunking strategies, dual dense + BM25 indexing fused with Reciprocal Rank Fusion, cross-encoder reranking, grounded generation with bracketed citations, an LLM-as-judge citation verifier, and a composite-confidence 'I don't know' gate.",
+    year: 2026,
+    status: "experiment",
+    tags: ["ai"],
+    tech: ["Python", "RAG", "Embeddings", "BM25"],
+    accent: "--accent3",
+    links: { github: `${GH}/rag-hybrid-search` },
+  },
+  {
+    slug: "llm-arbitration",
+    title: "Multi-Agent LLM Arbitration",
+    summary:
+      "Three specialist critics on three providers grade an output; a disagreement detector + adjudicator synthesize one confidence-scored verdict.",
+    description:
+      "Multi-agent LLM output arbitration: three specialist critics on three different providers (OpenAI / Anthropic / Ollama) grade output along distinct dimensions, then a pure disagreement detector and an adjudicator agent synthesize a single confidence-scored verdict. A LangGraph-style fixed DAG with a deterministic fallback.",
+    year: 2026,
+    status: "experiment",
+    tags: ["ai"],
+    tech: ["Python", "LangGraph", "Multi-LLM"],
+    accent: "--accent4",
+    links: { github: `${GH}/llm-arbitration` },
+  },
+  {
+    slug: "failure-forensics",
+    title: "Failure Forensics",
+    summary:
+      "Observability + automatic root-cause analysis for multi-step AI pipelines — span tracing and parallel LLM-as-judge backward traces.",
+    description:
+      "Observability and automatic root-cause analysis for multi-step AI pipelines: decorator-based span tracing, a parallel LLM-as-judge backward trace, an atomic feedback-to-eval loop, a FastAPI gateway, and a Streamlit visual explorer that shows exactly where a run went wrong.",
+    year: 2026,
+    status: "experiment",
+    tags: ["ai"],
+    tech: ["Python", "FastAPI", "Streamlit"],
+    accent: "--accent5",
+    links: { github: `${GH}/failure-forensics` },
+  },
+  {
+    slug: "self-healing-docs",
+    title: "Self-Healing Docs",
+    summary:
+      "A GitHub Action that detects when code changes leave docs stale, then opens an auto-fix PR or flags the affected sections.",
+    description:
+      "A GitHub Action that detects when code changes left the docs stale, then opens an auto-fix PR or flags affected sections for review — built on an embedding-based code-to-docs link graph, an LLM staleness verifier, and a style-preservation pass that keeps your voice.",
+    year: 2026,
+    status: "experiment",
+    tags: ["ai", "automation"],
+    tech: ["Python", "GitHub Actions", "Embeddings"],
+    accent: "--accent3",
+    links: { github: `${GH}/self-healing-docs` },
+  },
+  {
     slug: "banking-chatbot-rag",
     title: "Banking FAQ Chatbot (RAG)",
     summary:
@@ -63,8 +162,22 @@ export const projects: Project[] = [
     status: "shipped",
     tags: ["ai", "finance"],
     tech: ["LangChain", "ChromaDB", "FastAPI"],
-    accent: "--accent3",
+    accent: "--accent4",
     links: { github: `${GH}/banking-chatbot-rag` },
+  },
+  {
+    slug: "jarvis",
+    title: "Jarvis — Local AI Assistant",
+    summary:
+      "A privacy-first personal assistant on local models (Ollama) — morning briefings, RAG research, a coding helper, and voice input.",
+    description:
+      "A privacy-focused personal AI assistant powered by local models via Ollama: morning briefings, RAG-backed research, a coding assistant, and voice input — everything runs on your own machine, nothing leaves the laptop.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ai"],
+    tech: ["Python", "Ollama", "RAG"],
+    accent: "--accent1",
+    links: { github: `${GH}/jarvis` },
   },
   {
     slug: "pdf-rag-assistant",
@@ -85,6 +198,20 @@ export const projects: Project[] = [
     },
   },
   {
+    slug: "bist-ai-yatirim-asistani",
+    title: "BIST AI Investment Assistant",
+    summary:
+      "A BIST-focused, AI-assisted personal portfolio, analysis, and paper-trading app built with Python + Streamlit.",
+    description:
+      "A BIST-focused, AI-assisted personal stock app: portfolio tracking, analysis, and paper trading. Built with Python and Streamlit to explore market data and test strategies without risking real money.",
+    year: 2026,
+    status: "shipped",
+    tags: ["ai", "finance"],
+    tech: ["Python", "Streamlit"],
+    accent: "--accent2",
+    links: { github: `${GH}/bist-ai-yatirim-asistani` },
+  },
+  {
     slug: "n8n-automation-bundle",
     title: "n8n Workflow Recommender & AI Bundle",
     summary:
@@ -97,6 +224,23 @@ export const projects: Project[] = [
     tech: ["JavaScript", "n8n", "Gumroad"],
     accent: "--accent5",
     links: { github: `${GH}/awesome-n8n-workflows`, demo: "https://metmete.gumroad.com" },
+  },
+  {
+    slug: "n8n-workflow-to-python",
+    title: "n8n → Python Converter",
+    summary:
+      "Converts n8n workflow JSON into runnable Python scripts — the companion tool to the n8n workflow library.",
+    description:
+      "A browser tool that converts exported n8n workflow JSON files into clean, runnable Python scripts — the companion converter to the awesome-n8n-workflows library, for when you'd rather own the code than the no-code graph.",
+    year: 2026,
+    status: "shipped",
+    tags: ["automation"],
+    tech: ["JavaScript", "n8n", "Python"],
+    accent: "--accent3",
+    links: {
+      github: `${GH}/n8n-workflow-to-python`,
+      demo: "https://metehanulusoy.github.io/n8n-workflow-to-python",
+    },
   },
   {
     slug: "price-tracker-bot",
@@ -113,18 +257,18 @@ export const projects: Project[] = [
     links: { github: `${GH}/price-tracker-bot` },
   },
   {
-    slug: "rag-hybrid-search",
-    title: "Hybrid-Search RAG Pipeline",
+    slug: "claude-recipes",
+    title: "Claude Code Recipes",
     summary:
-      "Production-grade retrieval: dense + BM25 indexing, RRF fusion, cross-encoder rerank, and verified citations.",
+      "Copy-paste-ready skills, subagents, hooks, slash commands & MCP configs for Claude Code — each one explained.",
     description:
-      "An end-to-end RAG pipeline that takes retrieval quality seriously: multi-format ingestion, swappable chunking strategies, dual dense + BM25 indexing fused with Reciprocal Rank Fusion, cross-encoder reranking, grounded generation with bracketed citations, an LLM-as-judge citation verifier, and a composite-confidence 'I don't know' gate.",
+      "A curated, copy-paste-ready collection of skills, subagents, hooks, slash commands, and MCP server configs for Claude Code — each one documented with what it does and why, so you can lift the pattern instead of reverse-engineering it.",
     year: 2026,
-    status: "experiment",
-    tags: ["ai"],
-    tech: ["Python", "RAG", "Embeddings", "BM25"],
-    accent: "--accent3",
-    links: { github: `${GH}/rag-hybrid-search` },
+    status: "shipped",
+    tags: ["ai", "automation"],
+    tech: ["Claude Code", "MCP"],
+    accent: "--accent4",
+    links: { github: `${GH}/claude-recipes` },
   },
   {
     slug: "comic-book-manager",
@@ -193,6 +337,40 @@ export const projects: Project[] = [
   },
 ];
 
+const LOCKED_ACCENTS = ["--accent1", "--accent2", "--accent3", "--accent4", "--accent5"];
+
+/** Private repositories. The name is shown with a lock, but the cards are not
+ *  clickable and carry no description, tech, detail page, or sitemap entry. */
+const PRIVATE_NAMES = [
+  "LifeOS",
+  "Yucelergida Web",
+  "Bio Sync Turkey Strategy",
+  "AI Deep Research Agent",
+  "AI HR CV Screening",
+  "AI WhatsApp RAG Chatbot",
+  "AI Email Autoresponder",
+  "Telegram AI Agent Memory",
+  "Emotion Detector",
+  "CV Builder",
+  "n8n Workflow Recommender",
+];
+
+const lockedProjects: Project[] = PRIVATE_NAMES.map((title, i) => ({
+  slug: `private-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`,
+  title,
+  summary: "",
+  description: "",
+  year: 2026,
+  status: "private" as const,
+  tags: ["private"],
+  tech: [],
+  accent: LOCKED_ACCENTS[i % LOCKED_ACCENTS.length],
+  locked: true,
+  links: {},
+}));
+
+export const projects: Project[] = [...publicProjects, ...lockedProjects];
+
 export const projectTags = ["all", ...Array.from(new Set(projects.flatMap((p) => p.tags)))];
 
 export function getProject(slug: string) {
@@ -204,9 +382,12 @@ export function sortedProjects() {
     shipped: 0,
     experiment: 1,
     archived: 2,
+    private: 3,
   };
   return [...projects].sort(
     (a, b) =>
+      // Locked (private) projects always sort to the very end.
+      Number(Boolean(a.locked)) - Number(Boolean(b.locked)) ||
       Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
       b.year - a.year ||
       statusRank[a.status] - statusRank[b.status],
