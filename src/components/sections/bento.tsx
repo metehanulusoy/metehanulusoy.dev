@@ -60,11 +60,14 @@ function CardLabel({ children }: { children: ReactNode }) {
   );
 }
 
-export function Bento() {
+type LatestPost = { slug: string; title: string; description: string } | null;
+
+export function Bento({ latest }: { latest: LatestPost }) {
   const t = useTranslations("bento");
+  const nowT = useTranslations("now");
   const { container, item } = useMotionVariants(cardContainer, cardItem);
 
-  const nowItems = t.raw("now.items") as string[];
+  const nowItems = (nowT.raw("focus") as string[]).slice(0, 3);
 
   return (
     <section id="work" className="mx-auto max-w-6xl scroll-mt-24 px-6 py-20 md:px-8">
@@ -101,7 +104,7 @@ export function Bento() {
                   "1px solid color-mix(in oklch, var(--accent4) 45%, transparent)",
               }}
             >
-              featured
+              {t("featured.badge")}
             </span>
           </div>
           <ProjectVisual
@@ -132,15 +135,17 @@ export function Bento() {
           </Link>
         </Card>
 
-        {/* Latest post — indigo */}
+        {/* Latest post — indigo (real most-recent post) */}
         <Card accent="--accent1" item={item} className="lg:col-span-5 lg:row-span-2">
           <CardLabel>{t("latest.label")}</CardLabel>
           <h3 className="mt-4 text-lg font-semibold leading-snug text-fg">
-            {t("latest.title")}
+            {latest?.title ?? t("latest.label")}
           </h3>
-          <p className="mt-2 text-sm text-muted">{t("latest.excerpt")}</p>
+          {latest?.description ? (
+            <p className="mt-2 text-sm text-muted">{latest.description}</p>
+          ) : null}
           <Link
-            href="/blog"
+            href={latest ? `/blog/${latest.slug}` : "/blog"}
             className="group mt-auto inline-flex items-center gap-1.5 pt-5 font-mono text-sm text-accent-1"
           >
             {t("latest.cta")}

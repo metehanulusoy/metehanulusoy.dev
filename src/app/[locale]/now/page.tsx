@@ -1,43 +1,52 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
+import { alternates, localizedUrl } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Now",
-  description: "What Metehan Ulusoy is focused on right now.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "now" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: alternates(locale, "/now"),
+    openGraph: { url: localizedUrl(locale, "/now") },
+  };
+}
 
-// ── Update this whenever your focus shifts (this is the point of a /now page) ──
-const UPDATED = "June 2026";
+export default async function NowPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("now");
 
-const FOCUS = [
-  "Building the software for a Teknofest 2026 project (İKA team).",
-  "Coursework: operating systems, databases, and object-oriented programming.",
-  "Applying to summer 2026 internships — backend, AI engineering, or FinTech.",
-];
+  const focus = t.raw("focus") as string[];
+  const notDoing = t.raw("notDoing") as string[];
 
-const NOT_DOING = [
-  "Chasing every new framework — going deep on a few things instead.",
-  "Side projects I can't finish in a weekend.",
-];
-
-export default function NowPage() {
   return (
     <>
       <PageHeader
-        eyebrow="NOW"
-        title="Now."
-        tagline={`What I'm focused on this month. Last updated: ${UPDATED}.`}
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        tagline={t("tagline", { updated: t("updated") })}
         accent="--accent5"
       />
 
       <div className="mx-auto max-w-3xl px-6 py-12 md:px-8">
         <Reveal>
           <h2 className="font-mono text-xs uppercase tracking-widest text-accent-5">
-            Focused on
+            {t("focusedHeading")}
           </h2>
           <ul className="mt-4 space-y-3">
-            {FOCUS.map((item) => (
+            {focus.map((item) => (
               <li key={item} className="flex gap-3 text-base text-fg-2">
                 <span style={{ color: "var(--accent5)" }}>—</span>
                 {item}
@@ -48,10 +57,10 @@ export default function NowPage() {
 
         <Reveal className="mt-12">
           <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
-            Not doing right now
+            {t("notDoingHeading")}
           </h2>
           <ul className="mt-4 space-y-3">
-            {NOT_DOING.map((item) => (
+            {notDoing.map((item) => (
               <li key={item} className="flex gap-3 text-base text-muted">
                 <span>—</span>
                 {item}
@@ -62,14 +71,14 @@ export default function NowPage() {
 
         <Reveal className="mt-12">
           <p className="font-mono text-xs text-muted">
-            Inspired by{" "}
+            {t("inspiredPre")}{" "}
             <a
               href="https://nownownow.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-fg-2 underline-offset-2 hover:underline"
             >
-              Derek Sivers&apos; /now page
+              {t("inspiredLink")}
             </a>
             .
           </p>

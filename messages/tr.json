@@ -1,4 +1,8 @@
 {
+  "site": {
+    "titleDefault": "Metehan Ulusoy — Bilgisayar Mühendisliği öğrencisi & geliştirici",
+    "description": "Metehan Ulusoy'un portfolyosu ve teknik blogu — yapay zeka sistemleri, otomasyon ve full-stack web inşa eden bir Bilgisayar Mühendisliği öğrencisi."
+  },
   "nav": {
     "projects": "Projeler",
     "blog": "Blog",
@@ -22,29 +26,23 @@
     "title": "Bir anlık görüntü.",
     "featured": {
       "label": "Öne çıkan proje",
+      "badge": "öne çıkan",
       "name": "Credit Risk Scoring",
       "desc": "XGBoost + SHAP ile kredi temerrüt tahmin hattı — AUC-ROC 0.87, FastAPI ile sunuluyor.",
       "cta": "Projeyi gör"
     },
     "latest": {
       "label": "Son yazı",
-      "title": "VS Code'dan Neovim'e neden iki kez geçtim",
-      "excerpt": "İki deneme, tek klavye ve sonunda neyin kalıcı olmasını sağladığı.",
       "cta": "Oku"
     },
     "now": {
-      "label": "Şu an",
-      "items": [
-        "Derleyici dersi için özyinelemeli-inişli bir ayrıştırıcı bitiriyorum",
-        "Designing Data-Intensive Applications, 6. bölüm okuyorum",
-        "Yaz stajlarına başvuruyorum"
-      ]
+      "label": "Şu an"
     },
     "github": {
       "label": "GitHub",
-      "commits": "21 public repo",
+      "commits": "22 public repo",
       "language": "Python · TypeScript",
-      "streak": "8+ canlı proje"
+      "streak": "20+ proje yayında"
     },
     "reading": {
       "label": "Şu an okuyorum",
@@ -60,20 +58,121 @@
     "eyebrow": "SON YAZILAR",
     "title": "Yolculuktan notlar.",
     "all": "Tüm yazılar",
-    "minRead": "dk okuma",
-    "posts": [
-      { "date": "2026.05.18", "title": "VS Code'dan Neovim'e neden iki kez geçtim", "minutes": 4 },
-      { "date": "2026.05.04", "title": "İşaretçileri çizerek anlamak", "minutes": 7 },
-      { "date": "2026.04.21", "title": "Türkçe-duyarlı otomatik tamamlama inşa etmek", "minutes": 11 }
-    ]
+    "minRead": "dk okuma"
   },
   "footer": {
     "bio": "Kendi kullanmak isteyeceği yazılımlar yazan Bilgisayar Mühendisliği öğrencisi.",
     "sitemap": "Site haritası",
     "social": "Diğer yerler",
     "builtWith": "Next.js & Vercel ile yapıldı",
-    "rights": "Tüm hakları saklıdır.",
-    "theme": "Tema",
-    "language": "Dil"
+    "backToTop": "Başa dön"
+  },
+  "about": {
+    "metaTitle": "Hakkımda",
+    "metaDescription": "Metehan Ulusoy — yapay zeka, otomasyon ve full-stack projeler geliştiren Bilgisayar Mühendisliği öğrencisi.",
+    "eyebrow": "HAKKIMDA",
+    "title": "Merhaba, ben Metehan.",
+    "tagline": "Yaparak öğrenen bir Bilgisayar Mühendisliği öğrencisi — yapay zeka sistemleri, otomasyon ve etrafındaki web.",
+    "facts": {
+      "location": "Trabzon, Türkiye",
+      "education": "Bilgisayar Mühendisliği · 2. sınıf",
+      "current": "Şu an: yapay zeka, otomasyon ve backend"
+    },
+    "bio": [
+      "Türkiye'de 2. sınıf Bilgisayar Mühendisliği öğrencisiyim. Yazılıma, gerçekten kullanacağım şeyler yapmak istediğim için girdim — ve bir şeyin nasıl çalıştığını öğrenmenin en hızlı yolu onu yayına almayı denemek. Şu ana kadar bu, public ve private 20+ proje demek oldu.",
+      "Enerjimin çoğu yapay zeka ve otomasyona gidiyor: finans ML'i (kredi riski, dolandırıcılık tespiti), getirim hatları (RAG), LLM altyapısı (maliyet yönlendirme, eval kapıları, semantik önbellek) ve gerçek bildirimli otomasyon botları. Ayrıca Gumroad'da ticari bir otomasyon ürünü yayınladım; web tarafında ise Next.js ve Supabase ile full-stack uygulamalar geliştiriyorum. İşin gösterişsiz kısımlarını severim — kaliteyi ölçmek, maliyeti düşürmek, işleri tekrar üretilebilir kılmak.",
+      "Şu an bir Teknofest 2026 projesinin yazılım ekibindeyim ve backend, yapay zeka mühendisliği veya FinTech alanında bir yaz stajı arıyorum — ciddi yazılım yayınlayan insanlardan öğrenebileceğim bir yer."
+    ],
+    "educationHeading": "Eğitim",
+    "timeline": [
+      {
+        "period": "2024 — günümüz",
+        "title": "Recep Tayyip Erdoğan Üniversitesi",
+        "detail": "Lisans, Bilgisayar Mühendisliği · GNO 2.71/4.00",
+        "note": "İyi geçen dersler: Bilgisayar Ağları (AA), Diferansiyel Denklemler (AA), Lineer Cebir (AA), Veri Yapıları, OOP, Veritabanları, İşletim Sistemleri."
+      },
+      {
+        "period": "2023 — 2024",
+        "title": "Adana Alparslan Türkeş Bilim ve Teknoloji Üniversitesi",
+        "detail": "İngilizce Hazırlık · 81/100 ile geçti (İleri)",
+        "note": "TEOL İleri Düzey İngilizce sertifikası."
+      }
+    ],
+    "skillsHeading": "Yetenekler",
+    "skills": [
+      { "heading": "DİLLER", "items": ["Python", "Java", "C / C++", "SQL", "JavaScript"] },
+      { "heading": "YAPAY ZEKA / ML", "items": ["scikit-learn", "XGBoost", "LangChain", "RAG", "SHAP"] },
+      { "heading": "WEB & BACKEND", "items": ["Next.js", "FastAPI", "Streamlit", "Node.js", "Supabase"] },
+      { "heading": "ARAÇLAR", "items": ["Git", "Docker", "PostgreSQL", "n8n", "CMake"] },
+      { "heading": "ÖĞRENİYORUM", "items": ["İşletim sistemleri", "Dağıtık sistemler", "Sistem tasarımı"] }
+    ],
+    "languagesLine": "Diller: Türkçe (ana dil) · İngilizce (B2, ileri düzey)",
+    "downloadCV": "CV indir (PDF)"
+  },
+  "now": {
+    "metaTitle": "Şu an",
+    "metaDescription": "Metehan Ulusoy'un şu an üzerinde çalıştığı şeyler.",
+    "eyebrow": "ŞU AN",
+    "title": "Şu an.",
+    "updated": "Haziran 2026",
+    "tagline": "Bu ay üzerinde yoğunlaştıklarım. Son güncelleme: {updated}.",
+    "focusedHeading": "Yoğunlaştığım",
+    "focus": [
+      "Bir Teknofest 2026 projesinin yazılımını geliştiriyorum (İKA takımı).",
+      "Dersler: işletim sistemleri, veritabanları ve nesne yönelimli programlama.",
+      "2026 yaz stajlarına başvuruyorum — backend, yapay zeka mühendisliği veya FinTech."
+    ],
+    "notDoingHeading": "Şu an yapmadıklarım",
+    "notDoing": [
+      "Her yeni framework'ün peşinden koşmak — onun yerine birkaç şeyde derinleşiyorum.",
+      "Bir hafta sonunda bitiremeyeceğim yan projeler."
+    ],
+    "inspiredPre": "İlham kaynağı:",
+    "inspiredLink": "Derek Sivers'ın /now sayfası"
+  },
+  "blog": {
+    "metaTitle": "Blog",
+    "metaDescription": "Açıkta öğrenmenin notları — yapay zeka sistemleri, LLM altyapısı ve web.",
+    "eyebrow": "YAZILAR",
+    "title": "Yolculuktan notlar.",
+    "tagline": "İnşa ederken çözdüğüm şeyler — çoğunlukla LLM'ler, getirim ve yayına alma üzerine.",
+    "minRead": "dk",
+    "views": "görüntülenme",
+    "empty": "Henüz yazı yok — yakında tekrar uğra."
+  },
+  "projects": {
+    "metaTitle": "Projeler",
+    "metaDescription": "Metehan Ulusoy'un geliştirdiği şeyler — yapay zeka sistemleri, LLM altyapısı ve full-stack web uygulamaları.",
+    "eyebrow": "PROJELER",
+    "title": "İnşa ettiklerim.",
+    "tagline": "Yapay zeka sistemleri, LLM altyapısı ve ara sıra full-stack web uygulamaları — inşa edildi, bozuldu ve bazen yayına alındı.",
+    "filters": {
+      "label": "Projeleri etikete göre filtrele",
+      "all": "tümü",
+      "private": "özel"
+    },
+    "resultCount": "{count, plural, one {# proje} other {# proje}}",
+    "view": "Gör",
+    "liveDemo": "Canlı demo",
+    "source": "Kaynak",
+    "overview": "Genel bakış",
+    "tech": "Teknolojiler",
+    "status": {
+      "shipped": "yayında",
+      "experiment": "deney",
+      "archived": "arşiv",
+      "private": "özel"
+    },
+    "locked": {
+      "note": "özel",
+      "aria": "özel proje, kilitli"
+    }
+  },
+  "notFound": {
+    "status": "Durum 404 · sayfa bulunamadı",
+    "title": "Bir yerde yanlış dönüş yaptın.",
+    "body": "Aradığın sayfa mevcut değil. Belki hiç olmadı, belki sildim, belki yanlış yazdın.",
+    "goHome": "ana sayfa",
+    "seeProjects": "projeleri gör"
   }
 }

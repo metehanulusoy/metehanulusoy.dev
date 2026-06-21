@@ -3,16 +3,15 @@ import { notFound } from "next/navigation";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { SITE_URL, alternates, localizedUrl } from "@/lib/seo";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuroraBackground } from "@/components/aurora-background";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollProgress } from "@/components/scroll-progress";
 import "../globals.css";
-
-const SITE_URL = "https://metehanulusoy.dev";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -24,28 +23,20 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const path = locale === routing.defaultLocale ? "" : `/${locale}`;
+  const t = await getTranslations({ locale, namespace: "site" });
 
   return {
     metadataBase: new URL(SITE_URL),
     title: {
-      default: "Metehan Ulusoy — Computer Engineering student & builder",
+      default: t("titleDefault"),
       template: "%s — Metehan Ulusoy",
     },
-    description:
-      "Portfolio and technical blog of Metehan Ulusoy — a Computer Engineering student building AI systems, automation, and the full-stack web.",
-    alternates: {
-      canonical: `${SITE_URL}${path}`,
-      languages: {
-        en: SITE_URL,
-        tr: `${SITE_URL}/tr`,
-        "x-default": SITE_URL,
-      },
-    },
+    description: t("description"),
+    alternates: alternates(locale, ""),
     openGraph: {
       type: "website",
       siteName: "Metehan Ulusoy",
-      url: `${SITE_URL}${path}`,
+      url: localizedUrl(locale, ""),
       locale: locale === "tr" ? "tr_TR" : "en_US",
       images: ["/opengraph-image"],
     },
@@ -72,10 +63,16 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
+    // Dark-first: SSR ships the `dark` class; ThemeProvider switches returning
+    // light-mode users on mount (suppressHydrationWarning covers that class flip).
+    // No blocking inline theme script — React 19 doesn't allow rendering one inside
+    // a component without warning — so a returning light-mode user may see one
+    // dark frame. data-scroll-behavior tells Next the smooth scroll is intentional.
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      data-scroll-behavior="smooth"
+      className={`dark ${GeistSans.variable} ${GeistMono.variable}`}
     >
       <body className="flex min-h-dvh flex-col">
         <ThemeProvider>
