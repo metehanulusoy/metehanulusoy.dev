@@ -73,9 +73,10 @@ export default async function AboutPage({
           <h2 className="font-mono text-xs uppercase tracking-widest text-accent-2">
             {t("educationHeading")}
           </h2>
-          <ul className="mt-4 space-y-6">
+          <ul className="timeline mt-5 space-y-7">
             {timeline.map((entry) => (
-              <li key={entry.title} className="border-l-2 border-border pl-4">
+              <li key={entry.title} className="timeline-item">
+                <span className="timeline-dot" aria-hidden />
                 <span className="font-mono text-xs text-muted">{entry.period}</span>
                 <p className="mt-1 font-medium text-fg">{entry.title}</p>
                 <p className="text-sm text-muted">{entry.detail}</p>
