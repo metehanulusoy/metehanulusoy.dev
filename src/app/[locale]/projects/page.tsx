@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { ProjectsExplorer } from "@/components/projects-explorer";
+import { GalaxyBackdrop } from "@/components/sections/galaxy-backdrop";
 import { alternates, localizedUrl } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -30,6 +31,7 @@ export default async function ProjectsPage({
 
   return (
     <>
+      <GalaxyBackdrop />
       <PageHeader
         eyebrow={t("eyebrow")}
         title={t("title")}
