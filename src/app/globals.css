@@ -463,17 +463,33 @@
 .contrib-cell {
   aspect-ratio: 1;
   border-radius: 2px;
-  transform-origin: center;
-  background: color-mix(in oklch, var(--fg) 8%, transparent);
+  background: color-mix(in oklch, var(--fg) 9%, transparent);
+  opacity: 0.6;
+  animation: contrib-wave 3.4s ease-in-out infinite;
 }
 .contrib-cell[data-lvl="1"] {
-  background: color-mix(in oklch, var(--accent3) 32%, transparent);
+  background: color-mix(in oklch, var(--accent3) 34%, transparent);
 }
 .contrib-cell[data-lvl="2"] {
-  background: color-mix(in oklch, var(--accent3) 60%, transparent);
+  background: color-mix(in oklch, var(--accent3) 62%, transparent);
 }
 .contrib-cell[data-lvl="3"] {
   background: var(--accent3);
+}
+@keyframes contrib-wave {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contrib-cell {
+    animation: none !important;
+    opacity: 0.92;
+  }
 }
 
 /* ── Glass card with rotating conic border ──────────────────── */
