@@ -335,6 +335,56 @@
   }
 }
 
+/* ── Hero glyph field (ambient computer-engineering backdrop) ── */
+.hero-glyphs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Concentrate the glyphs in the empty right side and fade them out toward the
+     hero text on the left, so they never hurt legibility. */
+  -webkit-mask-image: radial-gradient(
+    135% 120% at 88% 42%,
+    #000 14%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(135% 120% at 88% 42%, #000 14%, transparent 72%);
+}
+.hero-glyph {
+  position: absolute;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0.3;
+  user-select: none;
+  /* transform/opacity only → composited; text content is static (no repaint). */
+}
+@keyframes glyph-tw {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.68;
+  }
+}
+@keyframes glyph-drift {
+  from {
+    transform: translate3d(0, 7px, 0);
+  }
+  to {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-glyph {
+    animation: none !important;
+    opacity: 0.4 !important;
+    transform: none !important;
+  }
+}
+
 /* ── Glass card with rotating conic border ──────────────────── */
 .aurora-card {
   position: relative;
