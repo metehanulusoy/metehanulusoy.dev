@@ -9,6 +9,7 @@ import { SITE_URL, alternates, localizedUrl } from "@/lib/seo";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuroraBackground } from "@/components/aurora-background";
 import { CursorTrails } from "@/components/cursor-trails";
+import { MeteorsBackdrop } from "@/components/sections/meteors-backdrop";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollProgress } from "@/components/scroll-progress";
@@ -84,6 +85,7 @@ export default async function LocaleLayout({
             <ScrollProgress />
             <AuroraBackground />
             <CursorTrails />
+            <MeteorsBackdrop />
             <SiteNav />
             <main id="main" className="flex-1">
               {children}
