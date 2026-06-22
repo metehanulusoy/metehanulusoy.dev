@@ -3,15 +3,17 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Neon ribbon trails that flow toward the cursor (adapted from a 21st.dev canvas
- * concept, reimplemented dependency-free). Spring-chained nodes draw soft glowing
- * curves with additive blending; the hue drifts through the site's vivid range.
- * Perf-guarded: paused offscreen via IntersectionObserver, skipped under
- * prefers-reduced-motion (the aurora shows through), auto-drifts when there's no
- * pointer (so it's alive on touch/idle), DPR capped, and fully cleaned up.
+ * Site-wide neon ribbon trails that flow toward the cursor (fixed, full-viewport,
+ * behind the content). Spring-chained nodes draw soft additive glow; the hue
+ * drifts through the site palette.
+ *
+ * Performance: the rAF loop runs ONLY while the cursor is moving or the ribbons
+ * are still settling — when everything comes to rest it sleeps (zero idle cost),
+ * and wakes on the next pointermove. Also paused when the tab is hidden, skipped
+ * under prefers-reduced-motion, DPR-capped, and fully cleaned up.
  */
-const TRAILS = 22;
-const SIZE = 40;
+const TRAILS = 20;
+const SIZE = 38;
 const SPRING = 0.45;
 const FRICTION = 0.5;
 const DAMP = 0.025;
@@ -20,29 +22,31 @@ const TENSION = 0.99;
 type Node = { x: number; y: number; vx: number; vy: number };
 type Trail = { spring: number; nodes: Node[] };
 
-export function HeroTrails() {
+export function CursorTrails() {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const maybeCtx = canvas.getContext("2d");
+    if (!maybeCtx) return;
+    // Explicit non-null type so the rAF closure keeps the narrowing.
+    const ctx: CanvasRenderingContext2D = maybeCtx;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let W = 0;
     let H = 0;
     const resize = () => {
-      W = canvas.clientWidth;
-      H = canvas.clientHeight;
-      canvas.width = Math.max(1, Math.floor(W * dpr));
-      canvas.height = Math.max(1, Math.floor(H * dpr));
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
 
-    const pos = { x: W * 0.6, y: H * 0.45 };
+    const pos = { x: W * 0.5, y: H * 0.4 };
     const target = { x: pos.x, y: pos.y };
     let lastPointer = -9999;
 
@@ -53,39 +57,36 @@ export function HeroTrails() {
       trails.push({ spring: SPRING + (i / TRAILS) * 0.025, nodes });
     }
 
-    const onMove = (e: PointerEvent) => {
-      const r = canvas.getBoundingClientRect();
-      target.x = e.clientX - r.left;
-      target.y = e.clientY - r.top;
-      lastPointer = performance.now();
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("resize", resize);
-
     let raf = 0;
-    let visible = true;
     let alive = true;
-    const t0 = performance.now();
 
-    const frame = (now: number) => {
-      raf = 0;
-      if (!alive || !visible) return;
-
-      // No recent pointer → drift the attractor so it stays alive (mobile/idle).
-      if (now - lastPointer > 2200) {
-        const tt = (now - t0) / 1000;
-        target.x = W * (0.5 + 0.33 * Math.sin(tt * 0.45));
-        target.y = H * (0.5 + 0.3 * Math.sin(tt * 0.63 + 1));
+    const ensureRunning = () => {
+      if (alive && document.visibilityState !== "hidden" && !raf) {
+        raf = requestAnimationFrame(frame);
       }
-      pos.x += (target.x - pos.x) * 0.12;
-      pos.y += (target.y - pos.y) * 0.12;
+    };
+
+    const onMove = (e: PointerEvent) => {
+      target.x = e.clientX;
+      target.y = e.clientY;
+      lastPointer = performance.now();
+      ensureRunning();
+    };
+
+    function frame(now: number) {
+      raf = 0;
+      if (!alive) return;
+
+      pos.x += (target.x - pos.x) * 0.16;
+      pos.y += (target.y - pos.y) * 0.16;
 
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = "lighter";
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 5;
       const hue = 250 + 72 * Math.sin(now * 0.0003);
       ctx.strokeStyle = `hsla(${hue.toFixed(0)}, 92%, 62%, 0.035)`;
 
+      let maxV = 0;
       for (const tr of trails) {
         let e = tr.spring;
         const head = tr.nodes[0];
@@ -105,6 +106,8 @@ export function HeroTrails() {
           nd.x += nd.vx;
           nd.y += nd.vy;
           e *= TENSION;
+          const v = Math.abs(nd.vx) + Math.abs(nd.vy);
+          if (v > maxV) maxV = v;
         }
         ctx.beginPath();
         ctx.moveTo(tr.nodes[0].x, tr.nodes[0].y);
@@ -119,24 +122,33 @@ export function HeroTrails() {
         if (a && b) ctx.quadraticCurveTo(a.x, a.y, b.x, b.y);
         ctx.stroke();
       }
-      raf = requestAnimationFrame(frame);
+
+      // Keep going only while there's motion; otherwise sleep until the next move.
+      const moving = maxV > 0.05 || now - lastPointer < 400;
+      if (moving) raf = requestAnimationFrame(frame);
+    }
+
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+      } else {
+        ensureRunning();
+      }
     };
 
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && alive && !raf) raf = requestAnimationFrame(frame);
-    });
-    io.observe(canvas);
-    raf = requestAnimationFrame(frame);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("resize", resize);
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       alive = false;
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("resize", resize);
-      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
-  return <canvas ref={ref} aria-hidden className="hero-canvas" />;
+  return <canvas ref={ref} aria-hidden className="cursor-trails" />;
 }

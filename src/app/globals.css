@@ -390,11 +390,11 @@
   }
 }
 
-/* ── Hero canvas backdrop (cursor-trail neon) ───────────────── */
-.hero-canvas {
-  position: absolute;
+/* ── Site-wide cursor-trail neon canvas ─────────────────────── */
+.cursor-trails {
+  position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -5; /* above the aurora (-z-10), behind all content */
   width: 100%;
   height: 100%;
   pointer-events: none;

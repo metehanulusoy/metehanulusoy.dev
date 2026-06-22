@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import { SITE_URL, alternates, localizedUrl } from "@/lib/seo";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuroraBackground } from "@/components/aurora-background";
+import { CursorTrails } from "@/components/cursor-trails";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollProgress } from "@/components/scroll-progress";
@@ -82,6 +83,7 @@ export default async function LocaleLayout({
             </a>
             <ScrollProgress />
             <AuroraBackground />
+            <CursorTrails />
             <SiteNav />
             <main id="main" className="flex-1">
               {children}
