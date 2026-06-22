@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { deferIdle } from "@/lib/defer";
 
 /**
  * Meteor shower backdrop (concept #3) — a faint twinkling starfield with periodic
  * shooting-star streaks. Scoped to whichever page renders it. Perf-guarded: DPR
  * capped, paused when the tab is hidden, skipped under prefers-reduced-motion /
- * no 2D context, cleaned up on unmount.
+ * no 2D context, cleaned up on unmount. The heavy init (buffer + starfield build
+ * + first rAF) is deferred one frame so it never lands on the route-transition
+ * frame; resize only re-seeds the field when the dimensions actually change.
  */
 type Star = { x: number; y: number; r: number; tw: number };
 type Meteor = { x: number; y: number; len: number; sp: number; life: number };
@@ -23,9 +26,19 @@ export function MeteorsBackdrop() {
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let stars: Star[] = [];
+    const meteors: Meteor[] = [];
+    let last = 0;
+    let raf = 0;
+    let cancelInit = () => {};
+    let alive = true;
+
     const resize = () => {
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
+      const w = Math.floor(window.innerWidth * dpr);
+      const h = Math.floor(window.innerHeight * dpr);
+      // Skip no-op resize events: only re-seed when the size truly changes.
+      if (canvas.width === w && canvas.height === h && stars.length) return;
+      canvas.width = w;
+      canvas.height = h;
       stars = Array.from({ length: 44 }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -33,12 +46,6 @@ export function MeteorsBackdrop() {
         tw: Math.random() * 6.283,
       }));
     };
-    resize();
-
-    const meteors: Meteor[] = [];
-    let last = 0;
-    let raf = 0;
-    let alive = true;
 
     const frame = (t: number) => {
       raf = 0;
@@ -96,12 +103,17 @@ export function MeteorsBackdrop() {
       }
     };
 
-    window.addEventListener("resize", resize);
-    document.addEventListener("visibilitychange", onVis);
-    raf = requestAnimationFrame(frame);
+    cancelInit = deferIdle(() => {
+      if (!alive) return;
+      resize();
+      window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", onVis);
+      raf = requestAnimationFrame(frame);
+    });
 
     return () => {
       alive = false;
+      cancelInit();
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVis);

@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { deferIdle } from "@/lib/defer";
 
 /**
  * Galaxy particle backdrop (concept #1) — orbiting, radiating star dust on a
  * fixed full-viewport canvas. Scoped to whichever page renders it (mounts/unmounts
  * with the route). Perf-guarded: DPR capped, paused when the tab is hidden,
  * skipped under prefers-reduced-motion / no 2D context, and fully cleaned up.
+ * The heavy init (buffer allocation + particle build + first rAF) is deferred one
+ * frame so it never lands on the route-transition frame — the canvas paints a
+ * frame later, which is imperceptible behind the page content.
  */
 type Star = { ring: number; rad: number; radius: number; move: number; col: string };
 
@@ -21,25 +25,19 @@ export function GalaxyBackdrop() {
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const cols = ["rgba(62,214,200,", "rgba(123,120,255,", "rgba(225,228,255,"];
     let R = 0;
+    let stars: Star[] = [];
+    let raf = 0;
+    let cancelInit = () => {};
+    let alive = true;
+
     const resize = () => {
       canvas.width = Math.floor(window.innerWidth * dpr);
       canvas.height = Math.floor(window.innerHeight * dpr);
       R = Math.min(canvas.width, canvas.height) * 0.16;
     };
-    resize();
 
-    const cols = ["rgba(62,214,200,", "rgba(123,120,255,", "rgba(225,228,255,"];
-    const stars: Star[] = Array.from({ length: 130 }, () => ({
-      ring: Math.random() * R * 3,
-      rad: Math.random() * 7,
-      radius: Math.random() * 2.2 * dpr,
-      move: (Math.random() * 4 + 1) / 700,
-      col: cols[(Math.random() * cols.length) | 0],
-    }));
-
-    let raf = 0;
-    let alive = true;
     const frame = () => {
       raf = 0;
       if (!alive || document.hidden) return;
@@ -72,12 +70,24 @@ export function GalaxyBackdrop() {
       }
     };
 
-    window.addEventListener("resize", resize);
-    document.addEventListener("visibilitychange", onVis);
-    raf = requestAnimationFrame(frame);
+    cancelInit = deferIdle(() => {
+      if (!alive) return;
+      resize();
+      stars = Array.from({ length: 130 }, () => ({
+        ring: Math.random() * R * 3,
+        rad: Math.random() * 7,
+        radius: Math.random() * 2.2 * dpr,
+        move: (Math.random() * 4 + 1) / 700,
+        col: cols[(Math.random() * cols.length) | 0],
+      }));
+      window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", onVis);
+      raf = requestAnimationFrame(frame);
+    });
 
     return () => {
       alive = false;
+      cancelInit();
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVis);

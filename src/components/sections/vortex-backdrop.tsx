@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { deferIdle } from "@/lib/defer";
 
 /**
  * Neon vortex backdrop (concept #2) — hue-shifting particles orbit the center and
  * brighten near a "source" that follows the cursor (auto-orbits when idle).
  * Additive blending gives the glow. Scoped to whichever page renders it.
  * Perf-guarded: DPR capped, paused when the tab is hidden, skipped under
- * prefers-reduced-motion / no 2D context, cleaned up on unmount.
+ * prefers-reduced-motion / no 2D context, cleaned up on unmount. The heavy init
+ * (buffer + particle build + first rAF) is deferred one frame so it never lands
+ * on the route-transition frame.
  */
 type P = { dist: number; rad: number; bs: number; vs: number; size: number };
 
@@ -23,20 +26,18 @@ export function VortexBackdrop() {
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let span = 0;
+    let ps: P[] = [];
+    let raf = 0;
+    let cancelInit = () => {};
+    let alive = true;
+    let tick = 0;
+    let srad = 0;
+
     const resize = () => {
       canvas.width = Math.floor(window.innerWidth * dpr);
       canvas.height = Math.floor(window.innerHeight * dpr);
       span = Math.min(canvas.width, canvas.height);
     };
-    resize();
-
-    const ps: P[] = Array.from({ length: 70 }, () => ({
-      dist: Math.sqrt(Math.random()) * (span / 2),
-      rad: Math.random() * 6.283,
-      bs: 0.001 + 0.001 * Math.random(),
-      vs: 0.0005 + 0.0005 * Math.random(),
-      size: (2 + 2 * Math.random()) * dpr,
-    }));
 
     const src = { x: 0, y: 0 };
     const target = { x: 0, y: 0 };
@@ -46,11 +47,6 @@ export function VortexBackdrop() {
       target.y = e.clientY * dpr - canvas.height / 2;
       lastPointer = performance.now();
     };
-
-    let raf = 0;
-    let alive = true;
-    let tick = 0;
-    let srad = 0;
 
     const frame = (now: number) => {
       raf = 0;
@@ -96,13 +92,25 @@ export function VortexBackdrop() {
       }
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("resize", resize);
-    document.addEventListener("visibilitychange", onVis);
-    raf = requestAnimationFrame(frame);
+    cancelInit = deferIdle(() => {
+      if (!alive) return;
+      resize();
+      ps = Array.from({ length: 70 }, () => ({
+        dist: Math.sqrt(Math.random()) * (span / 2),
+        rad: Math.random() * 6.283,
+        bs: 0.001 + 0.001 * Math.random(),
+        vs: 0.0005 + 0.0005 * Math.random(),
+        size: (2 + 2 * Math.random()) * dpr,
+      }));
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("resize", resize);
+      document.addEventListener("visibilitychange", onVis);
+      raf = requestAnimationFrame(frame);
+    });
 
     return () => {
       alive = false;
+      cancelInit();
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("resize", resize);
