@@ -5,8 +5,3 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-/** Write a browser cookie (client-only). */
-export function setCookie(name: string, value: string, maxAgeSeconds = 31_536_000) {
-  document.cookie = `${name}=${value};path=/;max-age=${maxAgeSeconds};samesite=lax`;
-}

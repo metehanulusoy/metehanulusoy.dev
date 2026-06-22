@@ -17,7 +17,7 @@ See `@AGENTS.md` for Next 16 breaking-change warnings.
 - i18n: `next-intl` with URL routing — `/` (en) and `/tr`; config in `src/i18n/{routing,navigation,request}.ts`, `src/proxy.ts` (Next 16 middleware successor). Use `Link`/`useRouter` from `@/i18n/navigation`. Strings in `messages/{en,tr}.json`.
 - Content: blog posts are MDX in `content/blog/`, read by `src/lib/posts.ts`; projects in `src/data/projects.ts`.
 - Optional services (graceful/hidden until env set): Upstash view counter (`src/lib/{redis,views}.ts`), Giscus comments (`src/components/comments.tsx`). See `.env.example`.
-- Helpers: `src/lib/utils.ts` (`cn()`, `setCookie()`).
+- Helpers: `src/lib/utils.ts` (`cn()`).
 
 ## Rules
 - Named exports for components; default export only for `page.tsx` / `layout.tsx`.
