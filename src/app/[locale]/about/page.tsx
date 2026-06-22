@@ -3,6 +3,7 @@ import { Download, GraduationCap, MapPin, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
+import { VortexBackdrop } from "@/components/sections/vortex-backdrop";
 import { alternates, localizedUrl } from "@/lib/seo";
 
 type Timeline = { period: string; title: string; detail: string; note: string };
@@ -41,6 +42,7 @@ export default async function AboutPage({
 
   return (
     <>
+      <VortexBackdrop />
       <PageHeader
         eyebrow={t("eyebrow")}
         title={t("title")}
