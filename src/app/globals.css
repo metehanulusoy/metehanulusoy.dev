@@ -400,6 +400,91 @@
   pointer-events: none;
 }
 
+/* ── Scroll spine (left margin, draws as you scroll · concept #1) ── */
+.scroll-spine {
+  display: none;
+  position: fixed;
+  left: 30px;
+  top: 18vh;
+  height: 64vh;
+  width: 2px;
+  z-index: 30;
+  pointer-events: none;
+}
+@media (min-width: 1280px) {
+  .scroll-spine {
+    display: block;
+  }
+}
+.scroll-spine-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: color-mix(in oklch, var(--fg) 12%, transparent);
+}
+.scroll-spine-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  transform-origin: top;
+  transform: scaleY(0);
+  background: var(--grad-nav-progress);
+}
+.scroll-spine-node {
+  position: absolute;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid color-mix(in oklch, var(--fg) 28%, transparent);
+}
+.scroll-spine-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--accent3);
+  box-shadow: 0 0 14px 1px color-mix(in oklch, var(--accent3) 70%, transparent);
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-spine-fill {
+    animation: spine-grow linear both;
+    animation-timeline: scroll(root block);
+  }
+  .scroll-spine-dot {
+    animation: spine-dot linear both;
+    animation-timeline: scroll(root block);
+    will-change: transform;
+  }
+}
+@keyframes spine-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes spine-dot {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(64vh);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-spine-fill,
+  .scroll-spine-dot {
+    animation: none !important;
+  }
+}
+
 /* ── Glass card with rotating conic border ──────────────────── */
 .aurora-card {
   position: relative;

@@ -12,6 +12,7 @@ import { CursorTrails } from "@/components/cursor-trails";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ScrollProgress } from "@/components/scroll-progress";
+import { ScrollSpine } from "@/components/scroll-spine";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -82,6 +83,7 @@ export default async function LocaleLayout({
               Skip to content
             </a>
             <ScrollProgress />
+            <ScrollSpine />
             <AuroraBackground />
             <CursorTrails />
             <SiteNav />
