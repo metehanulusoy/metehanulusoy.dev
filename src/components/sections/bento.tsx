@@ -9,6 +9,7 @@ import { cardContainer, cardItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
 import { resetTilt, tiltPointer } from "@/lib/pointer";
 import { CountUp } from "@/components/count-up";
+import { ContribGrid } from "@/components/sections/contrib-grid";
 import { ProjectVisual } from "@/components/project-visual";
 import { GithubIcon, LinkedinIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -181,11 +182,12 @@ export function Bento({ latest }: { latest: LatestPost }) {
             <CardLabel>{t("github.label")}</CardLabel>
           </div>
           <p
-            className="mt-4 font-mono text-2xl font-semibold tabular-nums text-fg"
+            className="mt-3 font-mono text-2xl font-semibold tabular-nums text-fg"
             style={{ color: "var(--accent3)" }}
           >
             <CountUp value={t("github.commits")} />
           </p>
+          <ContribGrid />
           <div className="mt-auto flex items-center gap-2 pt-4 font-mono text-xs text-muted">
             <span>{t("github.language")}</span>
             <span className="text-border">·</span>

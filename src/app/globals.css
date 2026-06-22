@@ -453,6 +453,29 @@
   }
 }
 
+/* ── Bento contribution heatmap (concept #4) ────────────────── */
+.contrib-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 3px;
+  margin-top: 14px;
+}
+.contrib-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  transform-origin: center;
+  background: color-mix(in oklch, var(--fg) 8%, transparent);
+}
+.contrib-cell[data-lvl="1"] {
+  background: color-mix(in oklch, var(--accent3) 32%, transparent);
+}
+.contrib-cell[data-lvl="2"] {
+  background: color-mix(in oklch, var(--accent3) 60%, transparent);
+}
+.contrib-cell[data-lvl="3"] {
+  background: var(--accent3);
+}
+
 /* ── Glass card with rotating conic border ──────────────────── */
 .aurora-card {
   position: relative;
