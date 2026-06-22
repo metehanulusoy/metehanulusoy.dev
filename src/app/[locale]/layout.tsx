@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
@@ -18,6 +18,11 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+// Drives the mobile browser UI colour; matches the SSR dark background.
+export const viewport: Viewport = {
+  themeColor: "#0c0b16",
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -33,7 +38,14 @@ export async function generateMetadata({
       template: "%s — Metehan Ulusoy",
     },
     description: t("description"),
-    alternates: alternates(locale, ""),
+    alternates: {
+      ...alternates(locale, ""),
+      // Advertise the feeds so browsers/readers can auto-discover them.
+      types: {
+        "application/rss+xml": `${SITE_URL}/rss.xml`,
+        "application/feed+json": `${SITE_URL}/feed.json`,
+      },
+    },
     openGraph: {
       type: "website",
       siteName: "Metehan Ulusoy",
@@ -85,7 +97,7 @@ export default async function LocaleLayout({
             <AuroraBackground />
             <CursorTrails />
             <SiteNav />
-            <main id="main" className="flex-1">
+            <main id="main" tabIndex={-1} className="flex-1 outline-none">
               {children}
             </main>
             <SiteFooter />

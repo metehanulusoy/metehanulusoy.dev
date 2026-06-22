@@ -16,9 +16,10 @@ import { Comments } from "@/components/comments";
 import { CodeCopy } from "@/components/code-copy";
 
 export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    getAllPosts().map((p) => ({ locale, slug: p.slug })),
-  );
+  // Posts are English-only, so prebuild just the default locale. /tr/blog/<slug>
+  // still renders on demand (dynamicParams) with the same English content —
+  // avoids compiling each post's MDX twice at build time.
+  return getAllPosts().map((p) => ({ locale: routing.defaultLocale, slug: p.slug }));
 }
 
 export async function generateMetadata({
@@ -90,8 +91,27 @@ export default async function PostPage({
     );
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.meta.title,
+    description: post.meta.description,
+    datePublished: post.meta.date || undefined,
+    dateModified: post.meta.date || undefined,
+    inLanguage: "en",
+    keywords: post.meta.tags.join(", "),
+    author: { "@type": "Person", name: "Metehan Ulusoy", url: SITE_URL },
+    publisher: { "@type": "Person", name: "Metehan Ulusoy", url: SITE_URL },
+    mainEntityOfPage: localizedUrl(locale, `/blog/${slug}`),
+    image: `${SITE_URL}/opengraph-image`,
+  };
+
   return (
     <article className="mx-auto max-w-2xl px-6 pt-36 pb-24 md:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link
         href="/blog"
         className="group inline-flex items-center gap-1.5 font-mono text-sm text-muted transition-colors hover:text-fg"
@@ -114,12 +134,12 @@ export default async function PostPage({
         </h1>
         <p className="mt-4 text-lg text-muted">{post.meta.description}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {post.meta.tags.map((t) => (
+          {post.meta.tags.map((tag) => (
             <span
-              key={t}
+              key={tag}
               className="rounded-md border border-border px-2 py-0.5 font-mono text-[11px] text-fg-2"
             >
-              {t}
+              {tag}
             </span>
           ))}
         </div>

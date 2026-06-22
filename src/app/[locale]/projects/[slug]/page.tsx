@@ -6,7 +6,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getProject, projects } from "@/data/projects";
 import { routing } from "@/i18n/routing";
-import { alternates, localizedUrl } from "@/lib/seo";
+import { alternates, localizedUrl, SITE_URL } from "@/lib/seo";
 import { GithubIcon } from "@/components/icons";
 import { ProjectCover } from "@/components/project-cover";
 import { CoverReveal } from "@/components/cover-reveal";
@@ -36,6 +36,8 @@ export async function generateMetadata({
       title: p.title,
       description: p.summary,
       url: localizedUrl(locale, `/projects/${slug}`),
+      // Use the project's own cover for the share preview when it has one.
+      ...(p.cover ? { images: [p.cover] } : {}),
     },
   };
 }
@@ -51,8 +53,26 @@ export default async function ProjectPage({
   const p = getProject(slug);
   if (!p || p.locked) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: p.title,
+    description: p.summary,
+    programmingLanguage: p.tech.join(", "),
+    dateCreated: String(p.year),
+    inLanguage: locale,
+    url: localizedUrl(locale, `/projects/${slug}`),
+    author: { "@type": "Person", name: "Metehan Ulusoy", url: SITE_URL },
+    ...(p.links.github ? { codeRepository: p.links.github } : {}),
+    ...(p.cover ? { image: `${SITE_URL}${p.cover}` } : {}),
+  };
+
   return (
     <article className="mx-auto max-w-3xl px-6 pt-36 pb-24 md:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link
         href="/projects"
         className="group inline-flex items-center gap-1.5 font-mono text-sm text-muted transition-colors hover:text-fg"
