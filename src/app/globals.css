@@ -356,7 +356,8 @@
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 600;
   white-space: nowrap;
-  opacity: 0.3;
+  /* Matches glyph-tw 0%/100% so the staggered start never snaps opacity. */
+  opacity: 0.22;
   user-select: none;
   /* transform/opacity only → composited; text content is static (no repaint). */
 }
@@ -369,12 +370,16 @@
     opacity: 0.68;
   }
 }
+/* Symmetric float that starts AND ends at 0 — matches the resting transform, so
+   the staggered (delayed) start never snaps from 0 to an offset (the "jerk down"
+   on load) and the loop has no seam. */
 @keyframes glyph-drift {
-  from {
-    transform: translate3d(0, 7px, 0);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
   }
-  to {
-    transform: translate3d(0, -7px, 0);
+  50% {
+    transform: translate3d(0, -6px, 0);
   }
 }
 @media (prefers-reduced-motion: reduce) {

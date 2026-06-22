@@ -57,7 +57,7 @@ export function HeroGlyphs() {
               left: g.left,
               fontSize: `${g.size}px`,
               color: g.color ?? "var(--muted)",
-              animation: `glyph-tw ${g.dur}s ease-in-out ${g.delay}s infinite, glyph-drift ${(g.dur * 1.6).toFixed(1)}s ease-in-out ${g.delay}s infinite alternate`,
+              animation: `glyph-tw ${g.dur}s ease-in-out ${g.delay}s infinite, glyph-drift ${(g.dur * 1.6).toFixed(1)}s ease-in-out ${g.delay}s infinite`,
             } as CSSProperties
           }
         >
