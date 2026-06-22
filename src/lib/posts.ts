@@ -5,6 +5,11 @@ import matter from "gray-matter";
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 const DEFAULT_LOCALE = "en";
 
+// Blog content is constant at build time, so memoize the parsed results in
+// production (sitemap, RSS/JSON feeds, the blog list, generateStaticParams and
+// the home page all read it). Disabled in dev so edits to MDX show on refresh.
+const CACHE = process.env.NODE_ENV === "production";
+
 export type PostMeta = {
   slug: string;
   title: string;
@@ -46,23 +51,29 @@ function readMeta(
   };
 }
 
+let listCache: PostMeta[] | null = null;
+
 function readAll(): PostMeta[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
-  return fs
-    .readdirSync(BLOG_DIR)
-    .filter((f) => f.endsWith(".mdx"))
-    .map((f): PostMeta | null => {
-      try {
-        const raw = fs.readFileSync(path.join(BLOG_DIR, f), "utf8");
-        const { data, content } = matter(raw);
-        return readMeta(data, f.replace(/\.mdx$/, ""), content);
-      } catch {
-        // Skip a malformed post rather than crashing the whole list.
-        return null;
-      }
-    })
-    .filter((p): p is PostMeta => p !== null)
-    .sort((a, b) => dateTime(b.date) - dateTime(a.date));
+  if (CACHE && listCache) return listCache;
+  const list = !fs.existsSync(BLOG_DIR)
+    ? []
+    : fs
+        .readdirSync(BLOG_DIR)
+        .filter((f) => f.endsWith(".mdx"))
+        .map((f): PostMeta | null => {
+          try {
+            const raw = fs.readFileSync(path.join(BLOG_DIR, f), "utf8");
+            const { data, content } = matter(raw);
+            return readMeta(data, f.replace(/\.mdx$/, ""), content);
+          } catch {
+            // Skip a malformed post rather than crashing the whole list.
+            return null;
+          }
+        })
+        .filter((p): p is PostMeta => p !== null)
+        .sort((a, b) => dateTime(b.date) - dateTime(a.date));
+  if (CACHE) listCache = list;
+  return list;
 }
 
 /**
@@ -76,15 +87,30 @@ export function getAllPosts(locale?: string): PostMeta[] {
   return forLocale.length > 0 ? forLocale : all;
 }
 
+/** Cheap, content-free existence check (no file read/parse). Used to validate
+ *  attacker-controlled slugs in the public view-counter Server Action. */
+export function postExists(slug: string): boolean {
+  return readAll().some((p) => p.slug === slug);
+}
+
+const postCache = new Map<string, { meta: PostMeta; content: string } | null>();
+
 export function getPost(
   slug: string,
 ): { meta: PostMeta; content: string } | null {
+  if (CACHE && postCache.has(slug)) return postCache.get(slug)!;
   const file = path.join(BLOG_DIR, `${slug}.mdx`);
+  let result: { meta: PostMeta; content: string } | null;
   try {
-    if (!fs.existsSync(file)) return null;
-    const { data, content } = matter(fs.readFileSync(file, "utf8"));
-    return { meta: readMeta(data, slug, content), content };
+    result = fs.existsSync(file)
+      ? (() => {
+          const { data, content } = matter(fs.readFileSync(file, "utf8"));
+          return { meta: readMeta(data, slug, content), content };
+        })()
+      : null;
   } catch {
-    return null;
+    result = null;
   }
+  if (CACHE) postCache.set(slug, result);
+  return result;
 }
