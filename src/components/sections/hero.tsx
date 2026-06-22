@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { heroContainer, heroItem } from "@/lib/motion";
 import { useMotionVariants } from "@/lib/use-motion-variants";
 import { DecryptText } from "@/components/decrypt-text";
-import { HeroDots } from "@/components/sections/hero-dots";
+import { HeroGlyphs } from "@/components/sections/hero-glyphs";
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -33,7 +33,7 @@ export function Hero() {
       id="top"
       className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-center px-6 pt-28 pb-20 md:px-8"
     >
-      <HeroDots />
+      <HeroGlyphs />
       <motion.div
         variants={container}
         initial="hidden"
