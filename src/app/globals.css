@@ -400,23 +400,6 @@
   pointer-events: none;
 }
 
-/* ── Projects cursor spotlight (concept #2) ─────────────────── */
-.projects-spotlight {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  opacity: var(--spot-o, 0);
-  transition: opacity 0.35s ease;
-  mix-blend-mode: screen;
-  background: radial-gradient(
-    300px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-    color-mix(in oklch, var(--accent1) 30%, transparent),
-    color-mix(in oklch, var(--accent3) 16%, transparent) 42%,
-    transparent 70%
-  );
-}
-
 /* ── Glass card with rotating conic border ──────────────────── */
 .aurora-card {
   position: relative;
