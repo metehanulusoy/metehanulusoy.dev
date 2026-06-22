@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getAllPosts } from "@/lib/posts";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/reveal";
+import { MeteorsBackdrop } from "@/components/sections/meteors-backdrop";
 import { alternates, localizedUrl } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -34,6 +35,7 @@ export default async function BlogPage({
 
   return (
     <>
+      <MeteorsBackdrop />
       <PageHeader
         eyebrow={t("eyebrow")}
         title={t("title")}
