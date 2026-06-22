@@ -13,7 +13,9 @@ export function useReducedMotion(): boolean {
   const [reduce, setReduce] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduce(mq.matches);
+    // Only schedule a re-render when the value actually changes, so the common
+    // case (preference OFF) doesn't pay a guaranteed second render on mount.
+    const sync = () => setReduce((prev) => (prev === mq.matches ? prev : mq.matches));
     sync();
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);

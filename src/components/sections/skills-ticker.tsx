@@ -44,33 +44,45 @@ export function SkillsTicker() {
     const frame = 1000 / 30;
     let prev = 0;
     let raf = 0;
-    let running = true;
+    let running = false;
 
     const tick = (now: number) => {
-      raf = requestAnimationFrame(tick);
-      if (!running || now - prev < frame) return;
-      prev = now;
-      const left = strip.getBoundingClientRect().left;
-      const cx = window.innerWidth / 2;
-      for (let i = 0; i < spans.length; i++) {
-        const distance = Math.abs(left + centers[i] - cx);
-        const intensity = distance < R ? (1 - distance / R) ** 2 : 0; // eased falloff
-        const bucket = (intensity * 100) | 0; // quantize → skip redundant style writes
-        if (bucket !== last[i]) {
-          last[i] = bucket;
-          spans[i].style.fontVariationSettings = `'wght' ${360 + Math.round(intensity * 480)}`;
-          // Resting glyphs stay legible (≥4.5:1); the bloom is carried by weight,
-          // not by dimming text below contrast.
-          spans[i].style.opacity = `${0.85 + intensity * 0.15}`;
+      raf = 0;
+      if (!running) return;
+      if (now - prev >= frame) {
+        prev = now;
+        const left = strip.getBoundingClientRect().left;
+        const cx = window.innerWidth / 2;
+        for (let i = 0; i < spans.length; i++) {
+          const distance = Math.abs(left + centers[i] - cx);
+          const intensity = distance < R ? (1 - distance / R) ** 2 : 0; // eased falloff
+          const bucket = (intensity * 100) | 0; // quantize → skip redundant style writes
+          if (bucket !== last[i]) {
+            last[i] = bucket;
+            spans[i].style.fontVariationSettings = `'wght' ${360 + Math.round(intensity * 480)}`;
+            // Resting glyphs stay legible (≥4.5:1); the bloom is carried by weight,
+            // not by dimming text below contrast.
+            spans[i].style.opacity = `${0.85 + intensity * 0.15}`;
+          }
         }
       }
+      raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
+    const ensureRunning = () => {
+      if (running && !raf) raf = requestAnimationFrame(tick);
+    };
 
+    // Only run the per-glyph loop while the strip is on screen; fully sleep the
+    // rAF (no empty wake-ups) when it scrolls out of view.
     const io = new IntersectionObserver(([entry]) => {
       running = entry.isIntersecting;
       // Also halt the CSS marquee transform so it stops compositing offscreen.
       strip.style.animationPlayState = entry.isIntersecting ? "running" : "paused";
+      if (running) ensureRunning();
+      else if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
     });
     io.observe(strip);
 
