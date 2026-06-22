@@ -25,6 +25,7 @@ export function PageHeader({
       </Reveal>
       <RevealText
         as="h1"
+        immediate
         text={title}
         className="mt-3 text-4xl font-semibold tracking-tight md:text-5xl"
       />

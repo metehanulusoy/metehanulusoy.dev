@@ -55,7 +55,10 @@ export default async function BlogPage({
                     href={`/blog/${post.slug}`}
                     className="group flex flex-col gap-1 py-5 transition-transform duration-300 hover:translate-x-1 sm:flex-row sm:items-baseline sm:gap-4"
                   >
-                    <time className="w-24 shrink-0 font-mono text-xs text-muted">
+                    <time
+                      dateTime={post.date || undefined}
+                      className="w-24 shrink-0 font-mono text-xs text-muted"
+                    >
                       {post.date}
                     </time>
                     <span className="flex-1">

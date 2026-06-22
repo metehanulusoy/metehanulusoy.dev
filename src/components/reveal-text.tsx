@@ -15,31 +15,41 @@ const reducedWord: Variants = {
   show: { opacity: 1, transition: { duration: 0.3 } },
 };
 
-/** A heading that reveals word-by-word as it scrolls into view. */
+/**
+ * A heading that reveals word-by-word. By default it triggers on scroll-into-view;
+ * pass `immediate` for above-the-fold titles so the stagger starts on the first
+ * frame (no blank title while the IntersectionObserver settles after a route
+ * change). Variants, stagger and easing are identical either way.
+ */
 export function RevealText({
   text,
   className,
   as = "h2",
+  immediate = false,
 }: {
   text: string;
   className?: string;
   as?: "h1" | "h2" | "h3";
+  immediate?: boolean;
 }) {
   const reduce = useReducedMotion();
   const words = text.split(" ");
   const Tag = as === "h1" ? motion.h1 : as === "h3" ? motion.h3 : motion.h2;
 
+  const trigger = immediate
+    ? { animate: "show" }
+    : { whileInView: "show", viewport: { once: true, margin: "-12% 0px" } };
+
   return (
     <Tag
       className={className}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-12% 0px" }}
+      {...trigger}
       variants={{ hidden: {}, show: { transition: { staggerChildren: reduce ? 0 : 0.06 } } }}
     >
       {words.map((w, i) => (
         <motion.span
-          key={i}
+          key={`${i}-${w}`}
           className="inline-block"
           variants={reduce ? reducedWord : word}
         >

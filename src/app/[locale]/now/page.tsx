@@ -48,8 +48,8 @@ export default async function NowPage({
             {t("focusedHeading")}
           </h2>
           <ul className="mt-4 space-y-3">
-            {focus.map((item) => (
-              <li key={item} className="flex gap-3 text-base text-fg-2">
+            {focus.map((item, i) => (
+              <li key={i} className="flex gap-3 text-base text-fg-2">
                 <span style={{ color: "var(--accent5)" }}>—</span>
                 {item}
               </li>
@@ -62,8 +62,8 @@ export default async function NowPage({
             {t("notDoingHeading")}
           </h2>
           <ul className="mt-4 space-y-3">
-            {notDoing.map((item) => (
-              <li key={item} className="flex gap-3 text-base text-muted">
+            {notDoing.map((item, i) => (
+              <li key={i} className="flex gap-3 text-base text-muted">
                 <span>—</span>
                 {item}
               </li>

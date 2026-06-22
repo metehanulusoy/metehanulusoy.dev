@@ -56,7 +56,10 @@ export function RecentWriting({ posts }: { posts: Post[] }) {
                 className="absolute left-0 top-1/2 h-0 w-0.5 -translate-y-1/2 rounded-full transition-all duration-300 group-hover:h-3/5"
                 style={{ background: "var(--grad-divider)" }}
               />
-              <time className="w-24 shrink-0 font-mono text-xs text-muted">
+              <time
+                dateTime={post.date || undefined}
+                className="w-24 shrink-0 font-mono text-xs text-muted"
+              >
                 {post.date}
               </time>
               <span className="flex-1 text-base text-fg-2 transition-colors group-hover:text-fg">
