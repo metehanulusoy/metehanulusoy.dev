@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties, PointerEvent } from "react";
 import { Link } from "@/i18n/navigation";
 import { AnimatePresence, motion, type Transition } from "motion/react";
 import { useTranslations } from "next-intl";
@@ -21,6 +21,33 @@ export function ProjectsExplorer() {
 
   const chipLabel = (tg: string) =>
     tg === "all" ? t("filters.all") : tg === "private" ? t("filters.private") : tg;
+
+  // Cursor spotlight over the grid (rAF-coalesced, pointer-driven). The vars feed
+  // a soft radial glow that lifts the cards nearest the cursor.
+  const gridRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef(0);
+  const ptr = useRef({ x: 0, y: 0 });
+  useEffect(() => () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  const onSpot = (e: PointerEvent<HTMLDivElement>) => {
+    const el = gridRef.current;
+    if (reduce || !el) return;
+    const r = el.getBoundingClientRect();
+    ptr.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        const g = gridRef.current;
+        if (!g) return;
+        g.style.setProperty("--spot-x", `${ptr.current.x}px`);
+        g.style.setProperty("--spot-y", `${ptr.current.y}px`);
+        g.style.setProperty("--spot-o", "1");
+      });
+    }
+  };
+  const offSpot = () => gridRef.current?.style.setProperty("--spot-o", "0");
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 md:px-8">
@@ -48,20 +75,28 @@ export function ProjectsExplorer() {
         {t("resultCount", { count: list.length })}
       </p>
 
-      <motion.div
-        layout={!reduce}
-        className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2"
+      <div
+        ref={gridRef}
+        onPointerMove={onSpot}
+        onPointerLeave={offSpot}
+        className="relative mt-8"
       >
-        <AnimatePresence mode="popLayout">
-          {list.map((p) =>
-            p.locked ? (
-              <LockedCard key={p.slug} p={p} reduce={!!reduce} />
-            ) : (
-              <ProjectCard key={p.slug} p={p} reduce={!!reduce} />
-            ),
-          )}
-        </AnimatePresence>
-      </motion.div>
+        <motion.div
+          layout={!reduce}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        >
+          <AnimatePresence mode="popLayout">
+            {list.map((p) =>
+              p.locked ? (
+                <LockedCard key={p.slug} p={p} reduce={!!reduce} />
+              ) : (
+                <ProjectCard key={p.slug} p={p} reduce={!!reduce} />
+              ),
+            )}
+          </AnimatePresence>
+        </motion.div>
+        {!reduce ? <div aria-hidden className="projects-spotlight" /> : null}
+      </div>
     </div>
   );
 }
