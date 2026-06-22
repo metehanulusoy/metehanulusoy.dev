@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { Link } from "@/i18n/navigation";
 import { AnimatePresence, motion, type Transition } from "motion/react";
@@ -16,8 +16,21 @@ export function ProjectsExplorer() {
   const [tag, setTag] = useState("all");
   const t = useTranslations("projects");
   const reduce = useReducedMotion();
-  const all = sortedProjects();
-  const list = tag === "all" ? all : all.filter((p) => p.tags.includes(tag));
+  // The project list is static — sort/filter once, not on every render.
+  const all = useMemo(() => sortedProjects(), []);
+  const list = useMemo(
+    () => (tag === "all" ? all : all.filter((p) => p.tags.includes(tag))),
+    [tag, all],
+  );
+  // Skip Motion's layout measurement on the very first paint (the costly part on
+  // a route transition); the cards still arrive via the opacity/y enter anim.
+  // Enable layout right after mount so filter re-ordering still animates.
+  const [layoutReady, setLayoutReady] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setLayoutReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  const layoutOn = layoutReady && !reduce;
 
   const chipLabel = (tg: string) =>
     tg === "all" ? t("filters.all") : tg === "private" ? t("filters.private") : tg;
@@ -49,15 +62,15 @@ export function ProjectsExplorer() {
       </p>
 
       <motion.div
-        layout={!reduce}
+        layout={layoutOn}
         className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2"
       >
         <AnimatePresence mode="popLayout">
           {list.map((p) =>
             p.locked ? (
-              <LockedCard key={p.slug} p={p} reduce={!!reduce} />
+              <LockedCard key={p.slug} p={p} reduce={!!reduce} layoutOn={layoutOn} />
             ) : (
-              <ProjectCard key={p.slug} p={p} reduce={!!reduce} />
+              <ProjectCard key={p.slug} p={p} reduce={!!reduce} layoutOn={layoutOn} />
             ),
           )}
         </AnimatePresence>
@@ -68,9 +81,9 @@ export function ProjectsExplorer() {
 
 const CARD_TRANSITION: Transition = { duration: 0.4, ease: [0.22, 1, 0.36, 1] };
 
-function cardMotion(reduce: boolean) {
+function cardMotion(reduce: boolean, layoutOn: boolean) {
   return {
-    layout: !reduce,
+    layout: layoutOn,
     initial: reduce ? { opacity: 0 } : { opacity: 0, y: 12 },
     animate: { opacity: 1, y: 0 },
     exit: reduce
@@ -80,10 +93,18 @@ function cardMotion(reduce: boolean) {
   };
 }
 
-function ProjectCard({ p, reduce }: { p: Project; reduce: boolean }) {
+function ProjectCard({
+  p,
+  reduce,
+  layoutOn,
+}: {
+  p: Project;
+  reduce: boolean;
+  layoutOn: boolean;
+}) {
   const t = useTranslations("projects");
   return (
-    <motion.div {...cardMotion(reduce)}>
+    <motion.div {...cardMotion(reduce, layoutOn)}>
       <Link
         href={`/projects/${p.slug}`}
         onPointerMove={tiltPointer}
@@ -136,10 +157,18 @@ function ProjectCard({ p, reduce }: { p: Project; reduce: boolean }) {
 
 /** A private repository: the name is shown with a lock, but it isn't clickable
  *  and has no description, tech, or detail page. */
-function LockedCard({ p, reduce }: { p: Project; reduce: boolean }) {
+function LockedCard({
+  p,
+  reduce,
+  layoutOn,
+}: {
+  p: Project;
+  reduce: boolean;
+  layoutOn: boolean;
+}) {
   const t = useTranslations("projects");
   return (
-    <motion.div {...cardMotion(reduce)}>
+    <motion.div {...cardMotion(reduce, layoutOn)}>
       <div
         aria-label={`${p.title} — ${t("locked.aria")}`}
         style={{ "--card-accent": `var(${p.accent})` } as CSSProperties}
